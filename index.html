@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Astral Sanctuary — 26.11.2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky-top: #180d36;
+      --sky-mid: #43226c;
+      --sky-pink: #b5588a;
+      --sky-gold: #ffd495;
+      --grass-top: #7ee849;
+      --grass-mid: #3fa335;
+      --earth-dark: #492822;
+      --earth-mid: #6e3e33;
+      --cyan-glow: #58f6ff;
+      --lotus-pink: #ff69b4;
+      --panel-bg: rgba(24, 14, 52, 0.86);
+      --panel-border: rgba(124, 244, 255, 0.45);
+      --gold-accent: #ffd97d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Quicksand', sans-serif;
+      color: #fff8f0;
+      background: linear-gradient(180deg, #13092b 0%, #2d1654 32%, #723677 65%, #d67a8a 88%, #ffd29d 100%);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Twilight Sky & Stars */
+    .sky-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .twilight-sun {
+      position: absolute;
+      bottom: 24%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fffbe6 0%, #ffe299 42%, rgba(255, 195, 130, 0.15) 75%, transparent 100%);
+      box-shadow: 0 0 90px 35px rgba(255, 214, 145, 0.55);
+    }
+
+    .distant-spires {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 55%;
+      opacity: 0.45;
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #fff, 0 0 14px var(--cyan-glow);
+      animation: twinkle var(--dur, 3s) infinite ease-in-out alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.25; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.25); }
+    }
+
+    /* Main Container */
+    .game-wrapper {
+      position: relative;
+      z-index: 2;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* HUD Bar */
+    .hud-bar {
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(19, 10, 44, 0.78);
+      border: 1.5px solid rgba(114, 241, 255, 0.4);
+      border-radius: 999px;
+      padding: 10px 20px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+    }
+
+    .hud-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      color: var(--gold-accent);
+      text-shadow: 0 0 10px rgba(255, 217, 125, 0.5);
+    }
+
+    .hud-progress {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .crystal-pip {
+      width: 14px;
+      height: 14px;
+      transform: rotate(45deg);
+      border: 1.5px solid var(--cyan-glow);
+      background: rgba(88, 246, 255, 0.12);
+      transition: all 0.4s ease;
+    }
+
+    .crystal-pip.active {
+      background: var(--cyan-glow);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    /* Floating Island Card */
+    .sanctuary-card {
+      width: 100%;
+      max-width: 780px;
+      background: var(--panel-bg);
+      border: 2px solid var(--panel-border);
+      border-radius: 26px;
+      padding: 30px 24px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 50px rgba(10, 5, 28, 0.65), inset 0 0 30px rgba(88, 246, 255, 0.12);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeFloat 0.6s ease forwards;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeFloat {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stage-badge {
+      display: inline-block;
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(88, 246, 255, 0.18), rgba(255, 105, 180, 0.22));
+      border: 1px solid rgba(124, 244, 255, 0.45);
+      color: var(--cyan-glow);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1, h2 {
+      font-family: 'Cinzel', serif;
+      color: #fff6e5;
+      text-shadow: 0 2px 14px rgba(255, 180, 220, 0.45);
+      margin-bottom: 12px;
+    }
+
+    h1 { font-size: clamp(1.5rem, 3.8vw, 2.25rem); }
+    h2 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+
+    p.subtitle {
+      color: #e4d7f5;
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 560px;
+      margin: 0 auto 22px;
+    }
+
+    /* Countdown Grid */
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      max-width: 480px;
+      margin: 22px auto;
+    }
+
+    .time-box {
+      background: rgba(14, 8, 36, 0.85);
+      border: 1.5px solid rgba(255, 217, 125, 0.45);
+      border-radius: 18px;
+      padding: 14px 8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .time-val {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 800;
+      color: var(--gold-accent);
+      text-shadow: 0 0 12px rgba(255, 217, 125, 0.5);
+    }
+
+    .time-lbl {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #cbb8e8;
+      margin-top: 4px;
+    }
+
+    /* Passcode Gate */
+    .passcode-input {
+      width: 240px;
+      max-width: 90%;
+      padding: 14px 18px;
+      font-family: 'Cinzel', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-align: center;
+      color: #fff;
+      background: rgba(12, 7, 32, 0.9);
+      border: 2px solid var(--cyan-glow);
+      border-radius: 16px;
+      outline: none;
+      box-shadow: 0 0 18px rgba(88, 246, 255, 0.25);
+      margin-bottom: 16px;
+    }
+
+    .magic-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 28px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #190d35;
+      background: linear-gradient(135deg, #84f9ff 0%, #ffd97d 100%);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(88, 246, 255, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .magic-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 28px rgba(255, 217, 125, 0.55);
+    }
+
+    /* Quiz Options */
+    .options-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 440px;
+      margin: 18px auto;
+    }
+
+    .option-btn {
+      padding: 14px 20px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff8f0;
+      background: rgba(45, 25, 88, 0.78);
+      border: 1.5px solid rgba(132, 249, 255, 0.35);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.22s ease;
+    }
+
+    .option-btn:hover {
+      background: rgba(88, 246, 255, 0.2);
+      border-color: var(--cyan-glow);
+      transform: translateY(-2px);
+    }
+
+    .error-toast {
+      min-height: 28px;
+      margin-top: 12px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #ff85b3;
+      text-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
+    }
+
+    .shake {
+      animation: shakeAnim 0.42s ease;
+    }
+
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* Stage 4: Hidden Cats Room */
+    .cat-counter-pill {
+      display: inline-block;
+      padding: 6px 18px;
+      background: rgba(14, 8, 36, 0.85);
+      border: 1.5px solid var(--gold-accent);
+      border-radius: 999px;
+      color: var(--gold-accent);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .room-stage {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid rgba(124, 244, 255, 0.5);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+      background: #23143d;
+    }
+
+    .room-stage svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hidden-cat {
+      cursor: pointer;
+      transition: transform 0.25s ease, opacity 0.4s ease;
+    }
+
+    .hidden-cat:hover {
+      filter: drop-shadow(0 0 8px #58f6ff);
+    }
+
+    .hidden-cat.found {
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    .cat-roster {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .roster-tag {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #d6c8eb;
+    }
+
+    .roster-tag.done {
+      background: rgba(126, 232, 73, 0.22);
+      border-color: #7ee849;
+      color: #b8ff94;
+      text-decoration: line-through;
+    }
+
+    /* Stage 5: Treasure Chest, Photo & Scattered Letters */
+    .chest-box {
+      width: 170px;
+      height: 150px;
+      margin: 12px auto 18px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .chest-box:hover {
+      transform: scale(1.06);
+    }
+
+    .relic-reveal {
+      display: none;
+      animation: fadeFloat 0.7s ease forwards;
+    }
+
+    .relic-reveal.open {
+      display: block;
+    }
+
+    .photo-crystal-frame {
+      width: 240px;
+      max-width: 82%;
+      margin: 0 auto 18px;
+      padding: 8px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #58f6ff, #ff69b4, #ffd97d);
+      box-shadow: 0 0 32px rgba(88, 246, 255, 0.5);
+    }
+
+    .photo-crystal-frame img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 16px;
+      display: block;
+      background: #2b184a;
+    }
+
+    .phrase-slots {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px 16px;
+      margin: 14px auto 18px;
+      max-width: 620px;
+    }
+
+    .word-group {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .letter-slot {
+      width: 24px;
+      height: 30px;
+      border-bottom: 2px solid rgba(255, 217, 125, 0.65);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--gold-accent);
+      text-shadow: 0 0 8px rgba(255, 217, 125, 0.6);
+    }
+
+    .scattered-pool {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      max-width: 580px;
+      margin: 0 auto 18px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(12, 7, 30, 0.65);
+      border: 1px dashed rgba(124, 244, 255, 0.4);
+    }
+
+    .star-tile {
+      width: 34px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #3b2075, #23114a);
+      border: 1.5px solid var(--cyan-glow);
+      color: #fff;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(88, 246, 255, 0.25);
+      transition: transform 0.2s ease, opacity 0.25s ease;
+    }
+
+    .star-tile:hover {
+      transform: translateY(-3px) scale(1.08);
+      background: #4e2b96;
+    }
+
+    .star-tile.used {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.4);
+    }
+
+    /* Stage 6: Final Birthday Scroll */
+    .scroll-parchment {
+      background: linear-gradient(180deg, rgba(255, 247, 232, 0.96) 0%, rgba(247, 233, 208, 0.96) 100%);
+      color: #2b1810;
+      border-radius: 20px;
+      padding: 32px 26px;
+      max-width: 640px;
+      margin: 10px auto 0;
+      border: 3px solid #d4a359;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(212, 163, 89, 0.35);
+      text-align: left;
+    }
+
+    .scroll-parchment h2 {
+      color: #5c2c16;
+      text-align: center;
+      text-shadow: none;
+      margin-bottom: 18px;
+      font-size: 1.45rem;
+    }
+
+    .letter-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.24rem;
+      font-weight: 600;
+      line-height: 1.85;
+      color: #2d1912;
+      white-space: pre-line;
+    }
+
+    /* Floating Island SVG Decoration under card */
+    .island-base-deco {
+      width: 280px;
+      max-width: 75%;
+      margin: -6px auto 0;
+      filter: drop-shadow(0 16px 24px rgba(10, 4, 26, 0.7));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Twilight Sky & Starlight -->
+  <div class="sky-layer" id="skyLayer">
+    <div class="twilight-sun"></div>
+    <svg class="distant-spires" viewBox="0 0 1200 400" preserveAspectRatio="none">
+      <path d="M0,400 L0,260 L90,210 L150,270 L240,140 L310,260 L430,220 L510,120 L580,240 L670,130 L750,250 L880,180 L970,260 L1080,160 L1200,240 L1200,400 Z" fill="#2b144d"/>
+      <path d="M0,400 L0,310 L140,260 L290,320 L460,250 L610,310 L790,240 L960,315 L1110,270 L1200,310 L1200,400 Z" fill="#1d0c38"/>
+    </svg>
+  </div>
+
+  <div class="game-wrapper">
+    <!-- Top HUD -->
+    <div class="hud-bar">
+      <div class="hud-title">✦ ASTRAL SANCTUARY ✦</div>
+      <div class="hud-progress" id="hudPips">
+        <div class="crystal-pip active"></div>
+        <div class="crystal-pip"></div>
+        <div class="crystal-pip"></div>
+        <div class="crystal-pip"></div>
+        <div class="crystal-pip"></div>
+        <div class="crystal-pip"></div>
+      </div>
+    </div>
+
+    <div class="sanctuary-card" id="mainCard">
+
+      <!-- STAGE 0: Midnight Time Lock (26/11/2026 00:00) -->
+      <div class="screen active" id="screenLock">
+        <span class="stage-badge">Astral Seal • 26 / 11 / 2026</span>
+        <h1>The Floating Islands Slumber</h1>
+        <p class="subtitle">This realm awakens at the exact stroke of midnight on November 26 2026</p>
+        <div class="countdown-grid">
+          <div class="time-box"><div class="time-val" id="cdDays">00</div><div class="time-lbl">Days</div></div>
+          <div class="time-box"><div class="time-val" id="cdHours">00</div><div class="time-lbl">Hours</div></div>
+          <div class="time-box"><div class="time-val" id="cdMins">00</div><div class="time-lbl">Minutes</div></div>
+          <div class="time-box"><div class="time-val" id="cdSecs">00</div><div class="time-lbl">Seconds</div></div>
+        </div>
+        <p class="subtitle" style="font-size:0.88rem; opacity:0.85;">Return when the stars align at 00:00</p>
+      </div>
+
+      <!-- STAGE 1: Passcode Portal (26112001) -->
+      <div class="screen" id="screenPasscode">
+        <span class="stage-badge">Portal Gate</span>
+        <h1>Enter the Sacred Key</h1>
+        <p class="subtitle">Speak the eight-digit crystal code to cross into the floating sanctuary</p>
+        <div>
+          <input type="password" id="passInput" class="passcode-input" maxlength="8" placeholder="••••••••" inputmode="numeric" />
+        </div>
+        <button class="magic-btn" onclick="checkPasscode()">Unlock Portal</button>
+        <div class="error-toast" id="passError"></div>
+      </div>
+
+      <!-- STAGE 2: Three Questions -->
+      <div class="screen" id="screenQuiz">
+        <span class="stage-badge" id="quizBadge">Island Trial 1 of 3</span>
+        <h2 id="quizQuestion">Who fell in love first?</h2>
+        <div class="options-stack" id="quizOptions"></div>
+        <div class="error-toast" id="quizError"></div>
+      </div>
+
+      <!-- STAGE 3: Cozy Room with 8 Hidden Cats -->
+      <div class="screen" id="screenCats">
+        <span class="stage-badge">Sanctum Trial • Hidden Companions</span>
+        <h2>Find All 8 Hidden Cats</h2>
+        <p class="subtitle" style="margin-bottom:10px;">Search every corner of the twilight room and tap all 8 cats to gather them</p>
+        <div class="cat-counter-pill" id="catCounter">Found: 0 / 8</div>
+
+        <div class="room-stage">
+          <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Room Background -->
+            <defs>
+              <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2c194d"/>
+                <stop offset="100%" stop-color="#48266e"/>
+              </linearGradient>
+              <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b2138"/>
+                <stop offset="100%" stop-color="#241224"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Wall & Floor -->
+            <rect width="700" height="285" fill="url(#wallGrad)"/>
+            <rect y="285" width="700" height="115" fill="url(#floorGrad)"/>
+            <line x1="0" y1="285" x2="700" y2="285" stroke="#7cf4ff" stroke-opacity="0.3" stroke-width="2"/>
+
+            <!-- Twilight Window -->
+            <rect x="260" y="38" width="180" height="135" rx="14" fill="#170c33" stroke="#8c589c" stroke-width="5"/>
+            <circle cx="385" cy="82" r="22" fill="#ffe6a3" opacity="0.9"/>
+            <circle cx="305" cy="72" r="2" fill="#fff"/>
+            <circle cx="335" cy="105" r="2.5" fill="#58f6ff"/>
+            <line x1="350" y1="38" x2="350" y2="173" stroke="#8c589c" stroke-width="4"/>
+            <line x1="260" y1="105" x2="440" y2="105" stroke="#8c589c" stroke-width="4"/>
+
+            <!-- Bookshelf Left -->
+            <rect x="36" y="75" width="115" height="210" rx="6" fill="#3a1f36" stroke="#63365a" stroke-width="3"/>
+            <line x1="36" y1="145" x2="151" y2="145" stroke="#63365a" stroke-width="4"/>
+            <line x1="36" y1="215" x2="151" y2="215" stroke="#63365a" stroke-width="4"/>
+            <!-- Books -->
+            <rect x="46" y="102" width="14" height="43" fill="#ff7eb3"/>
+            <rect x="62" y="108" width="12" height="37" fill="#58f6ff"/>
+            <rect x="76" y="98" width="15" height="47" fill="#ffd97d"/>
+            <rect x="115" y="172" width="14" height="43" fill="#b47eff"/>
+            <rect x="131" y="178" width="12" height="37" fill="#7ee849"/>
+
+            <!-- Cozy Sofa Center -->
+            <rect x="215" y="210" width="270" height="82" rx="18" fill="#59295c" stroke="#8e4991" stroke-width="3"/>
+            <rect x="200" y="232" width="32" height="65" rx="12" fill="#471f4a"/>
+            <rect x="468" y="232" width="32" height="65" rx="12" fill="#471f4a"/>
+            <!-- Cushions -->
+            <rect x="242" y="218" width="44" height="38" rx="10" fill="#ff85b3" opacity="0.85"/>
+            <rect x="412" y="218" width="44" height="38" rx="10" fill="#58f6ff" opacity="0.75"/>
+
+            <!-- Rug -->
+            <ellipse cx="350" cy="342" rx="195" ry="34" fill="#6b3461" stroke="#ffd97d" stroke-opacity="0.45" stroke-width="2"/>
+
+            <!-- Side Table & Plant Right -->
+            <rect x="545" y="220" width="95" height="68" rx="8" fill="#3a1f36" stroke="#63365a" stroke-width="3"/>
+            <polygon points="578,220 608,220 602,190 584,190" fill="#d97a54"/>
+            <ellipse cx="593" cy="175" rx="22" ry="18" fill="#49b842"/>
+            <ellipse cx="580" cy="182" rx="14" ry="11" fill="#7ee849"/>
+
+            <!-- Curtain Left & Right of Window -->
+            <path d="M245,32 Q272,105 248,185 L232,185 Q245,105 232,32 Z" fill="#7b387d"/>
+            <path d="M455,32 Q428,105 452,185 L468,185 Q455,105 468,32 Z" fill="#7b387d"/>
+
+            <!-- ============ 8 HIDDEN CATS ============ -->
+
+            <!-- Cat 1: Large Black & White Cat #1 (Peeking top of bookshelf) -->
+            <g class="hidden-cat" id="cat-0" onclick="findCat(0)" transform="translate(96, 46)">
+              <polygon points="4,18 10,2 18,16" fill="#181820"/>
+              <polygon points="24,16 32,2 38,18" fill="#ffffff"/>
+              <ellipse cx="21" cy="24" rx="19" ry="15" fill="#181820"/>
+              <path d="M21,11 Q34,14 35,28 L18,28 Z" fill="#ffffff"/>
+              <circle cx="15" cy="22" r="2.2" fill="#7ee849"/>
+              <circle cx="27" cy="22" r="2.2" fill="#7ee849"/>
+            </g>
+
+            <!-- Cat 2: Large Black & White Cat #2 (Curled on sofa seat) -->
+            <g class="hidden-cat" id="cat-1" onclick="findCat(1)" transform="translate(318, 224)">
+              <ellipse cx="26" cy="26" rx="24" ry="15" fill="#ffffff"/>
+              <path d="M10,18 Q26,10 42,20 Q34,30 14,26 Z" fill="#181820"/>
+              <circle cx="14" cy="17" r="11" fill="#181820"/>
+              <polygon points="5,11 8,0 14,9" fill="#181820"/>
+              <polygon points="15,9 21,0 23,11" fill="#ffffff"/>
+              <circle cx="11" cy="16" r="1.8" fill="#ffd97d"/>
+              <circle cx="18" cy="16" r="1.8" fill="#ffd97d"/>
+            </g>
+
+            <!-- Cat 3: Large Black & White Cat #3 (Behind right curtain / windowsill) -->
+            <g class="hidden-cat" id="cat-2" onclick="findCat(2)" transform="translate(412, 134)">
+              <ellipse cx="20" cy="24" rx="17" ry="15" fill="#ffffff"/>
+              <path d="M5,18 Q18,8 25,22 L6,26 Z" fill="#181820"/>
+              <polygon points="6,13 10,1 16,11" fill="#181820"/>
+              <polygon points="24,11 30,1 34,13" fill="#ffffff"/>
+              <circle cx="15" cy="20" r="2" fill="#58f6ff"/>
+              <circle cx="25" cy="20" r="2" fill="#58f6ff"/>
+            </g>
+
+            <!-- Cat 4: Small Black & White Kitten (Tucked inside bookshelf middle shelf) -->
+            <g class="hidden-cat" id="cat-3" onclick="findCat(3)" transform="translate(76, 184)">
+              <ellipse cx="14" cy="18" rx="12" ry="10" fill="#ffffff"/>
+              <circle cx="14" cy="12" r="9" fill="#181820"/>
+              <path d="M14,5 Q21,7 21,15 L12,15 Z" fill="#ffffff"/>
+              <polygon points="7,6 9,-2 13,5" fill="#181820"/>
+              <polygon points="15,5 19,-2 21,6" fill="#ffffff"/>
+              <circle cx="11" cy="12" r="1.5" fill="#ffd97d"/>
+              <circle cx="17" cy="12" r="1.5" fill="#ffd97d"/>
+            </g>
+
+            <!-- Cat 5: Pure White Cat (Sitting gracefully on left side of rug) -->
+            <g class="hidden-cat" id="cat-4" onclick="findCat(4)" transform="translate(185, 302)">
+              <ellipse cx="20" cy="28" rx="15" ry="17" fill="#ffffff"/>
+              <circle cx="20" cy="13" r="11" fill="#ffffff"/>
+              <polygon points="10,7 13,-3 18,5" fill="#ffffff"/>
+              <polygon points="22,5 27,-3 30,7" fill="#ffffff"/>
+              <polygon points="12,6 14,0 17,5" fill="#ffb6c1"/>
+              <polygon points="23,5 26,0 28,6" fill="#ffb6c1"/>
+              <circle cx="16" cy="12" r="1.8" fill="#58f6ff"/>
+              <circle cx="24" cy="12" r="1.8" fill="#58f6ff"/>
+              <path d="M33,34 Q46,28 42,18" stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round"/>
+            </g>
+
+            <!-- Cat 6: Large Brown/Grey Tabby & White Cat matching Photo 1 (Under the sofa / center rug) -->
+            <g class="hidden-cat" id="cat-5" onclick="findCat(5)" transform="translate(320, 314)">
+              <!-- Fluffy white body -->
+              <ellipse cx="28" cy="26" rx="24" ry="15" fill="#fcfaf7"/>
+              <!-- Tabby saddle patch -->
+              <ellipse cx="34" cy="22" rx="13" ry="9" fill="#594a3e"/>
+              <!-- Head: white muzzle/chin + brown-grey striped tabby cap -->
+              <circle cx="16" cy="16" r="13" fill="#fcfaf7"/>
+              <path d="M4,15 Q16,2 28,15 Q22,18 16,13 Q10,18 4,15 Z" fill="#5c4b3b"/>
+              <!-- Tabby stripes -->
+              <line x1="13" y1="6" x2="13" y2="11" stroke="#241c15" stroke-width="1.6"/>
+              <line x1="16" y1="5" x2="16" y2="11" stroke="#241c15" stroke-width="1.6"/>
+              <line x1="19" y1="6" x2="19" y2="11" stroke="#241c15" stroke-width="1.6"/>
+              <!-- Ears -->
+              <polygon points="5,9 8,-2 13,6" fill="#4a3b2e"/>
+              <polygon points="19,6 24,-2 27,9" fill="#4a3b2e"/>
+              <!-- Pink nose & eyes -->
+              <circle cx="16" cy="18" r="1.7" fill="#f29bab"/>
+              <circle cx="11" cy="15" r="1.8" fill="#2e241b"/>
+              <circle cx="21" cy="15" r="1.8" fill="#2e241b"/>
+            </g>
+
+            <!-- Cat 7: Tiny Kitten identical to Cat 6 (Next to the plant pot on right table) -->
+            <g class="hidden-cat" id="cat-6" onclick="findCat(6)" transform="translate(612, 194)">
+              <ellipse cx="13" cy="16" rx="10" ry="8" fill="#fcfaf7"/>
+              <circle cx="10" cy="10" r="7.5" fill="#fcfaf7"/>
+              <path d="M3,9 Q10,2 17,9 Q13,11 10,8 Q7,11 3,9 Z" fill="#5c4b3b"/>
+              <polygon points="4,5 6,-1 9,4" fill="#4a3b2e"/>
+              <polygon points="11,4 14,-1 16,5" fill="#4a3b2e"/>
+              <circle cx="10" cy="11.5" r="1.1" fill="#f29bab"/>
+              <circle cx="7.5" cy="9.5" r="1.2" fill="#2e241b"/>
+              <circle cx="12.5" cy="9.5" r="1.2" fill="#2e241b"/>
+            </g>
+
+            <!-- Cat 8: Medium-Large Black Cat with White Patches (Under the right side table) -->
+            <g class="hidden-cat" id="cat-7" onclick="findCat(7)" transform="translate(566, 250)">
+              <ellipse cx="24" cy="24" rx="20" ry="14" fill="#17171f"/>
+              <!-- White chest & paw patch -->
+              <ellipse cx="14" cy="26" rx="7" ry="8" fill="#ffffff"/>
+              <circle cx="34" cy="33" r="4" fill="#ffffff"/>
+              <circle cx="15" cy="13" r="11" fill="#17171f"/>
+              <polygon points="6,7 9,-3 14,5" fill="#17171f"/>
+              <polygon points="16,5 21,-3 24,7" fill="#17171f"/>
+              <!-- White nose blaze -->
+              <polygon points="15,11 13,17 17,17" fill="#ffffff"/>
+              <circle cx="11" cy="12" r="1.9" fill="#ffd97d"/>
+              <circle cx="19" cy="12" r="1.9" fill="#ffd97d"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="cat-roster" id="catRoster"></div>
+      </div>
+
+      <!-- STAGE 4: Treasure Chest + Photo + Scattered Letters -->
+      <div class="screen" id="screenChest">
+        <span class="stage-badge">Astral Relic Chest</span>
+        <h2>A Memory Sealed in Starlight</h2>
+        <p class="subtitle" id="chestHint">Tap the enchanted treasure chest to open what lies inside</p>
+
+        <div class="chest-box" id="chestTrigger" onclick="openRelicChest()">
+          <svg viewBox="0 0 180 150" width="170" height="150">
+            <ellipse cx="90" cy="136" rx="68" ry="12" fill="rgba(88,246,255,0.28)"/>
+            <!-- Chest Base -->
+            <rect x="28" y="68" width="124" height="64" rx="10" fill="#542946" stroke="#ffd97d" stroke-width="3.5"/>
+            <rect x="42" y="68" width="12" height="64" fill="#ffd97d" opacity="0.85"/>
+            <rect x="126" y="68" width="12" height="64" fill="#ffd97d" opacity="0.85"/>
+            <!-- Chest Lid -->
+            <path d="M24,68 Q24,28 90,28 Q156,28 156,68 Z" fill="#73365e" stroke="#ffd97d" stroke-width="3.5"/>
+            <!-- Glowing Crystal Lock -->
+            <polygon points="90,54 102,70 90,86 78,70" fill="#58f6ff" stroke="#ffffff" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <div class="relic-reveal" id="relicReveal">
+          <div class="photo-crystal-frame">
+            <img src="73114.jpg" alt="Our Memory" onerror="this.style.display='none'; document.getElementById('photoFallback').style.display='flex';" />
+            <div id="photoFallback" style="display:none; height:220px; align-items:center; justify-content:center; color:#ffd97d; font-family:'Cinzel',serif; padding:16px;">
+              ✦ Our Cherished Memory ✦
+            </div>
+          </div>
+
+          <p class="subtitle" style="margin-bottom:8px; font-size:0.95rem;">Tap the scattered starlight letters to assemble the hidden message</p>
+
+          <div class="phrase-slots" id="phraseSlots"></div>
+          <div class="scattered-pool" id="scatteredPool"></div>
+
+          <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <button class="option-btn" style="padding:10px 18px; font-size:0.88rem;" onclick="autoGatherLetters()">Gather All Stars</button>
+            <button class="magic-btn" id="toLetterBtn" style="display:none;" onclick="goToFinalLetter()">Open Final Birthday Scroll</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 5: Final Poetic English Birthday Letter (No Periods or Commas) -->
+      <div class="screen" id="screenLetter">
+        <span class="stage-badge">26 • 11 • 2026</span>
+        <div class="scroll-parchment">
+          <h2>For You On Your Birthday</h2>
+          <div class="letter-body">Four years have passed and still every time I try to put you into a sentence I feel what we have is bigger than language can hold On your birthday today I am not looking for words to decorate meaning I want to tell you what remains when everything around us grows quiet and what resembles us in its truest form
+
+You are not just someone I share time with you are the calm I return to when the world feels heavy and the space where I need no defense or explanation I love your presence even from afar I love that quiet space we build away from the noise and I love that there is something in you that steadies the heart without a sound
+
+I know life is not a straight line and each of us carries weights and battles others never see yet being with you makes things easier to bear and gives tomorrow a softer closer meaning In you there is a steady grounding no one can buy and a truth that feels like what I always search for when meaning slips away
+
+Happy birthday to the one closest to my soul and the most lasting inside me I wish you a calmer gentler year one worthy of your heart that brings you peace and joy</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Floating Island Base Under Card -->
+    <svg class="island-base-deco" viewBox="0 0 320 95">
+      <path d="M12,10 Q160,24 308,10 L262,56 Q210,72 165,92 Q115,68 58,54 Z" fill="#593129"/>
+      <path d="M45,16 L165,92 L245,48 L195,22 Z" fill="#3d201b"/>
+      <path d="M8,10 Q160,24 312,10 Q300,24 265,20 Q235,28 205,21 Q160,30 115,21 Q80,28 48,20 Q20,24 8,10 Z" fill="#68d941"/>
+    </svg>
+  </div>
+
+  <script>
+    // Generate Twinkling Stars
+    const skyLayer = document.getElementById('skyLayer');
+    for (let i = 0; i < 65; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 3 + 1.5;
+      s.style.width = size + 'px';
+      s.style.height = size + 'px';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 75 + '%';
+      s.style.setProperty('--dur', (Math.random() * 3 + 2) + 's');
+      skyLayer.appendChild(s);
+    }
+
+    // Screen Navigation & HUD
+    const screens = ['screenLock', 'screenPasscode', 'screenQuiz', 'screenCats', 'screenChest', 'screenLetter'];
+    function showScreen(index) {
+      screens.forEach((id, idx) => {
+        document.getElementById(id).classList.toggle('active', idx === index);
+      });
+      const pips = document.querySelectorAll('.crystal-pip');
+      pips.forEach((pip, idx) => {
+        pip.classList.toggle('active', idx <= index);
+      });
+    }
+
+    // Stage 0: Midnight Countdown to 26/11/2026 00:00:00
+    const targetDate = new Date(2026, 10, 26, 0, 0, 0).getTime(); // Month 10 = November
+    let unlockedByTime = false;
+
+    function updateCountdown() {
+      const now = Date.now();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        if (!unlockedByTime) {
+          unlockedByTime = true;
+          showScreen(1);
+        }
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / (1000 * 60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
+      document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('cdMins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('cdSecs').textContent = String(secs).padStart(2, '0');
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Stage 1: Passcode Check (26112001)
+    function triggerShake(elId, msgId, text) {
+      const el = document.getElementById(elId);
+      const msg = document.getElementById(msgId);
+      msg.textContent = text;
+      el.classList.remove('shake');
+      void el.offsetWidth;
+      el.classList.add('shake');
+    }
+
+    function checkPasscode() {
+      const val = document.getElementById('passInput').value.trim();
+      if (val === '26112001') {
+        document.getElementById('passError').textContent = '';
+        loadQuiz(0);
+        showScreen(2);
+      } else {
+        triggerShake('mainCard', 'passError', 'try again love');
+      }
+    }
+
+    document.getElementById('passInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') checkPasscode();
+    });
+
+    // Stage 2: Three Questions
+    const quizData = [
+      {
+        q: '1. Who fell in love first?',
+        options: ['You', 'Me', 'You and me'],
+        answer: 'You and me'
+      },
+      {
+        q: "2. Who's the best girl in the world?",
+        options: ['Me', 'Whitouta and Lu'],
+        answer: 'Whitouta and Lu'
+      },
+      {
+        q: '3. What is my favourite thing about you?',
+        options: ['Your romantic side', 'Your sleepy voice', 'Your laugh'],
+        answer: 'Your laugh'
+      }
+    ];
+
+    let currentQ = 0;
+
+    function loadQuiz(index) {
+      currentQ = index;
+      const item = quizData[index];
+      document.getElementById('quizBadge').textContent = `Island Trial ${index + 1} of 3`;
+      document.getElementById('quizQuestion').textContent = item.q;
+      document.getElementById('quizError').textContent = '';
+
+      const box = document.getElementById('quizOptions');
+      box.innerHTML = '';
+      item.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (opt === item.answer) {
+            if (currentQ + 1 < quizData.length) {
+              loadQuiz(currentQ + 1);
+            } else {
+              initCatStage();
+              showScreen(3);
+            }
+          } else {
+            triggerShake('mainCard', 'quizError', 'try again love');
+          }
+        };
+        box.appendChild(btn);
+      });
+    }
+
+    // Stage 3: 8 Hidden Cats
+    const catLabels = [
+      'Black & White Cat I',
+      'Black & White Cat II',
+      'Black & White Cat III',
+      'Little Black & White Kitten',
+      'Pure White Cat',
+      'Tabby & White Cat',
+      'Tiny Tabby & White Kitten',
+      'Black Cat with White Patches'
+    ];
+    const foundCats = new Set();
+
+    function initCatStage() {
+      const roster = document.getElementById('catRoster');
+      roster.innerHTML = '';
+      catLabels.forEach((label, idx) => {
+        const span = document.createElement('span');
+        span.className = 'roster-tag';
+        span.id = `roster-${idx}`;
+        span.textContent = label;
+        roster.appendChild(span);
+      });
+    }
+
+    function findCat(idx) {
+      if (foundCats.has(idx)) return;
+      foundCats.add(idx);
+      document.getElementById(`cat-${idx}`).classList.add('found');
+      document.getElementById(`roster-${idx}`).classList.add('done');
+      document.getElementById('catCounter').textContent = `Found: ${foundCats.size} / 8`;
+
+      if (foundCats.size === 8) {
+        setTimeout(() => {
+          initScatteredPhrase();
+          showScreen(4);
+        }, 700);
+      }
+    }
+
+    // Stage 4: Treasure Chest + Scattered Letters ("happy birthday to the light of my life")
+    const targetPhrase = 'happy birthday to the light of my life';
+    let slotElements = [];
+    let tileElements = [];
+    let nextSlotIdx = 0;
+
+    function openRelicChest() {
+      document.getElementById('chestTrigger').style.display = 'none';
+      document.getElementById('chestHint').style.display = 'none';
+      document.getElementById('relicReveal').classList.add('open');
+    }
+
+    function initScatteredPhrase() {
+      const slotsContainer = document.getElementById('phraseSlots');
+      const poolContainer = document.getElementById('scatteredPool');
+      slotsContainer.innerHTML = '';
+      poolContainer.innerHTML = '';
+      slotElements = [];
+      tileElements = [];
+      nextSlotIdx = 0;
+
+      const words = targetPhrase.split(' ');
+      const lettersList = [];
+
+      words.forEach(word => {
+        const wg = document.createElement('div');
+        wg.className = 'word-group';
+        for (const ch of word) {
+          const slot = document.createElement('span');
+          slot.className = 'letter-slot';
+          slot.dataset.expected = ch;
+          wg.appendChild(slot);
+          slotElements.push(slot);
+          lettersList.push(ch);
+        }
+        slotsContainer.appendChild(wg);
+      });
+
+      // Shuffle letters
+      const shuffled = lettersList
+        .map(ch => ({ ch, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(item => item.ch);
+
+      shuffled.forEach(ch => {
+        const btn = document.createElement('button');
+        btn.className = 'star-tile';
+        btn.textContent = ch;
+        btn.onclick = () => placeLetterTile(btn, ch);
+        poolContainer.appendChild(btn);
+        tileElements.push(btn);
+      });
+    }
+
+    function placeLetterTile(btn, ch) {
+      if (nextSlotIdx >= slotElements.length) return;
+      const expected = slotElements[nextSlotIdx].dataset.expected;
+      if (ch === expected) {
+        slotElements[nextSlotIdx].textContent = ch;
+        btn.classList.add('used');
+        nextSlotIdx++;
+        if (nextSlotIdx === slotElements.length) {
+          document.getElementById('toLetterBtn').style.display = 'inline-flex';
+        }
+      } else {
+        // Find matching unused tile or gently pulse the needed letter
+        btn.classList.remove('shake');
+        void btn.offsetWidth;
+        btn.classList.add('shake');
+      }
+    }
+
+    function autoGatherLetters() {
+      while (nextSlotIdx < slotElements.length) {
+        const expected = slotElements[nextSlotIdx].dataset.expected;
+        const matchingTile = tileElements.find(t => !t.classList.contains('used') && t.textContent === expected);
+        if (matchingTile) {
+          matchingTile.classList.add('used');
+        }
+        slotElements[nextSlotIdx].textContent = expected;
+        nextSlotIdx++;
+      }
+      document.getElementById('toLetterBtn').style.display = 'inline-flex';
+    }
+
+    function goToFinalLetter() {
+      showScreen(5);
+    }
+  </script>
+</body>
+</html>
