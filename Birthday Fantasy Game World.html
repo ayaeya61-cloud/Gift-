@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realm of November 26 &middot; Fantasy Birthday Quest</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Cinzel, Quicksand, Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --cyan-glow: #58f3ff;
+      --gold-glow: #ffd97d;
+      --lotus-pink: #ff7eb3;
+      --panel-bg: rgba(24, 12, 46, 0.86);
+      --panel-border: rgba(126, 246, 255, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Quicksand', sans-serif;
+      color: #fdf7ff;
+      background: linear-gradient(
+        180deg,
+        #110724 0%,
+        #2d134f 26%,
+        #6e286b 55%,
+        #c86382 80%,
+        #f7b88f 100%
+      );
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .font-fantasy {
+      font-family: 'Cinzel', serif;
+    }
+
+    .font-game {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Fullscreen Animated Sky & Firefly Canvas */
+    #sky-particles-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Distant Twilight Horizon & Mountain Spires */
+    .fantasy-horizon {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .horizon-sun {
+      position: absolute;
+      bottom: 16%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(255, 251, 224, 0.96) 0%,
+        rgba(255, 212, 148, 0.58) 45%,
+        rgba(255, 152, 165, 0) 75%
+      );
+      filter: blur(2px);
+    }
+
+    /* Game HUD Glass Panel */
+    .game-hud-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1.5px solid var(--panel-border);
+      box-shadow:
+        0 20px 55px rgba(10, 4, 24, 0.78),
+        0 0 34px rgba(88, 243, 255, 0.18),
+        inset 0 0 24px rgba(255, 126, 179, 0.1);
+    }
+
+    /* Floating Animations */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @keyframes floatDelayed {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .island-float {
+      animation: floatSlow 4.6s ease-in-out infinite;
+    }
+
+    .island-float-delayed {
+      animation: floatDelayed 5.4s ease-in-out 1.1s infinite;
+    }
+
+    /* Clockwork Gear Rotation */
+    @keyframes spinGear {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .gear-spin {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: spinGear 18s linear infinite;
+    }
+
+    /* Waterfall Flow */
+    @keyframes waterFlow {
+      0% { stroke-dashoffset: 24; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    .waterfall-stream {
+      stroke-dasharray: 8 4;
+      animation: waterFlow 0.85s linear infinite;
+    }
+
+    /* Crystal Glow */
+    @keyframes crystalGlow {
+      0%, 100% { filter: drop-shadow(0 0 6px rgba(88, 243, 255, 0.65)); }
+      50% { filter: drop-shadow(0 0 15px rgba(88, 243, 255, 0.98)); }
+    }
+
+    .crystal-pulse {
+      animation: crystalGlow 2.6s ease-in-out infinite;
+    }
+
+    /* Stage Transitions */
+    .game-stage {
+      display: none;
+      opacity: 0;
+      transform: scale(0.96) translateY(12px);
+      transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .game-stage.active {
+      display: block;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Shake Animation on Wrong Input */
+    @keyframes runeShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    .shake-card {
+      animation: runeShake 0.42s ease-in-out;
+    }
+
+    /* Keypad & Quest Option Buttons */
+    .rune-key {
+      background: linear-gradient(180deg, rgba(64, 36, 106, 0.94) 0%, rgba(31, 17, 58, 0.98) 100%);
+      border: 1.5px solid rgba(126, 246, 255, 0.38);
+      color: #f4fbff;
+      box-shadow: 0 5px 0 #140928, 0 8px 18px rgba(0, 0, 0, 0.45);
+      transition: all 0.15s ease;
+    }
+
+    .rune-key:hover {
+      border-color: #7ef6ff;
+      background: linear-gradient(180deg, rgba(84, 48, 136, 0.96) 0%, rgba(44, 24, 80, 0.98) 100%);
+      box-shadow: 0 5px 0 #140928, 0 0 18px rgba(88, 243, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .rune-key:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #140928;
+    }
+
+    .quest-option-btn {
+      background: linear-gradient(135deg, rgba(54, 30, 92, 0.9) 0%, rgba(28, 15, 53, 0.96) 100%);
+      border: 1.5px solid rgba(255, 158, 208, 0.38);
+      color: #fff6fc;
+      box-shadow: 0 4px 0 #130826, 0 10px 22px rgba(0, 0, 0, 0.42);
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .quest-option-btn:hover {
+      border-color: #ffd97d;
+      background: linear-gradient(135deg, rgba(78, 43, 128, 0.95) 0%, rgba(42, 22, 78, 0.98) 100%);
+      box-shadow: 0 4px 0 #130826, 0 0 24px rgba(255, 217, 125, 0.36);
+      transform: translateY(-2px);
+    }
+
+    .quest-option-btn.option-wrong {
+      border-color: #ff6b8b;
+      background: linear-gradient(135deg, rgba(140, 30, 64, 0.92) 0%, rgba(76, 16, 36, 0.96) 100%);
+      box-shadow: 0 0 22px rgba(255, 107, 139, 0.5);
+    }
+
+    .quest-option-btn.option-right {
+      border-color: #64ffda;
+      background: linear-gradient(135deg, rgba(25, 122, 114, 0.94) 0%, rgba(16, 74, 76, 0.98) 100%);
+      box-shadow: 0 0 28px rgba(100, 255, 218, 0.58);
+    }
+
+    /* Adventurer Sprite Hop Animation */
+    @keyframes heroHop {
+      0% { transform: translateY(0) scale(1); }
+      45% { transform: translateY(-16px) scale(1.08); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    .hero-hop {
+      animation: heroHop 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Hidden Cats Interactive SVG States */
+    .fantasy-cat {
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease, filter 0.25s ease;
+    }
+
+    .fantasy-cat:hover {
+      filter: brightness(1.18) drop-shadow(0 0 9px #ffd97d);
+    }
+
+    .fantasy-cat.rescued {
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(1.35) translateY(-16px);
+    }
+
+    .fantasy-cat.hint-glow {
+      filter: drop-shadow(0 0 13px #58f3ff) brightness(1.25);
+    }
+
+    @keyframes rescueToast {
+      0% { opacity: 1; transform: translateY(0) scale(0.85); }
+      100% { opacity: 0; transform: translateY(-34px) scale(1.1); }
+    }
+
+    .rescue-floating-tag {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(22, 12, 44, 0.94);
+      border: 1px solid #ffd97d;
+      color: #ffe8a3;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65);
+      animation: rescueToast 1.15s ease-out forwards;
+      z-index: 40;
+    }
+
+    /* Final Treasure Chest & Scroll */
+    .treasure-portal-box {
+      background: radial-gradient(circle at 50% 40%, rgba(88, 243, 255, 0.22) 0%, rgba(27, 15, 51, 0.94) 72%);
+      border: 2px solid rgba(126, 246, 255, 0.52);
+      box-shadow: 0 0 42px rgba(88, 243, 255, 0.28), inset 0 0 30px rgba(255, 126, 179, 0.2);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      cursor: pointer;
+    }
+
+    .treasure-portal-box:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 0 56px rgba(88, 243, 255, 0.48), inset 0 0 35px rgba(255, 217, 125, 0.28);
+    }
+
+    .luminous-scroll {
+      background: linear-gradient(180deg, rgba(31, 18, 56, 0.95) 0%, rgba(18, 10, 34, 0.98) 100%);
+      border: 1.5px solid rgba(255, 217, 125, 0.48);
+      box-shadow:
+        0 25px 65px rgba(8, 3, 20, 0.9),
+        0 0 45px rgba(255, 165, 212, 0.22),
+        inset 0 0 35px rgba(88, 243, 255, 0.09);
+      animation: scrollReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes scrollReveal {
+      0% { opacity: 0; transform: translateY(22px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Stage 5: Chest Lid Burst, Photo Relic Rise & Scattered Letters */
+    @keyframes chestLidBurst {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      60% { transform: translateY(-28px) rotate(-14deg); opacity: 0.9; }
+      100% { transform: translateY(-44px) rotate(-22deg); opacity: 0; }
+    }
+
+    .chest-lid-opened {
+      animation: chestLidBurst 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes relicPhotoRise {
+      0% { opacity: 0; transform: translateY(38px) scale(0.55); filter: brightness(1.8); }
+      70% { opacity: 1; transform: translateY(-6px) scale(1.03); filter: brightness(1.1); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1); }
+    }
+
+    .relic-photo-reveal {
+      animation: relicPhotoRise 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes letterFloatBob {
+      0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+      50% { transform: translateY(-6px) rotate(calc(var(--rot, 0deg) + 4deg)); }
+    }
+
+    .scattered-letter-tile {
+      background: linear-gradient(145deg, rgba(64, 34, 108, 0.94) 0%, rgba(28, 14, 54, 0.98) 100%);
+      border: 1.5px solid rgba(126, 246, 255, 0.62);
+      color: #fff6d6;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), 0 0 14px rgba(88, 243, 255, 0.35);
+      animation: letterFloatBob 2.8s ease-in-out infinite;
+      transition: transform 0.25s ease, opacity 0.3s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+
+    .scattered-letter-tile:hover {
+      border-color: #ffd97d;
+      box-shadow: 0 0 22px rgba(255, 217, 125, 0.78);
+      transform: scale(1.15) !important;
+    }
+
+    .scattered-letter-tile.gathered {
+      opacity: 0;
+      transform: scale(0.2) translateY(20px) !important;
+      pointer-events: none;
+    }
+
+    .phrase-slot {
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .phrase-slot.filled {
+      background: linear-gradient(180deg, rgba(84, 46, 138, 0.92) 0%, rgba(42, 22, 76, 0.96) 100%);
+      border-color: #ffd97d;
+      color: #ffe8a3;
+      text-shadow: 0 0 10px rgba(255, 217, 125, 0.7);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-between min-h-screen px-3 py-4 sm:px-6 sm:py-6">
+
+  <!-- Twilight Horizon & Distant Spires Backdrop -->
+  <div class="fantasy-horizon" aria-hidden="true">
+    <div class="horizon-sun"></div>
+    <svg class="absolute bottom-0 left-0 w-full h-56 sm:h-72 opacity-65" viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path
+        fill="#281242"
+        d="M0,255 L110,175 L220,225 L350,110 L480,210 L615,135 L720,195 L855,90 L990,190 L1120,130 L1270,205 L1375,150 L1440,195 L1440,320 L0,320 Z"
+      />
+      <path
+        fill="#16092b"
+        d="M0,285 L175,215 L315,265 L465,180 L615,255 L765,200 L915,260 L1085,170 L1245,250 L1440,210 L1440,320 L0,320 Z"
+      />
+    </svg>
+  </div>
+
+  <!-- Twinkling Stars & Fireflies Canvas -->
+  <canvas id="sky-particles-canvas"></canvas>
+
+  <!-- Top Game HUD Bar -->
+  <header class="relative z-20 w-full max-w-3xl flex items-center justify-between gap-2 mb-3">
+    <div class="flex items-center gap-2 bg-[#160c2e]/90 border border-[#7ef6ff]/40 rounded-full px-3.5 py-1.5 shadow-lg">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#58f3ff] animate-ping"></span>
+      <span id="hud-realm-label" class="font-game text-xs sm:text-sm tracking-wide text-[#bcefff]">
+        Midnight Portal Sealed
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Creator Unlock / Time-Lock View Toggle -->
+      <button
+        id="creator-toggle-btn"
+        type="button"
+        class="font-game text-xs bg-[#241347]/95 hover:bg-[#361d69] text-[#ffd97d] border border-[#ffd97d]/45 rounded-full px-3.5 py-1.5 shadow-lg transition cursor-pointer"
+      >
+        &#10024; Creator Unlock
+      </button>
+
+      <!-- Quest Progress Bar (Visible after unlocking passcode 26112001) -->
+      <div id="hud-quest-tracker" class="hidden items-center gap-2 bg-[#160c2e]/90 border border-[#ffd97d]/40 rounded-full px-3.5 py-1.5 shadow-lg">
+        <span id="hud-quest-text" class="font-game text-xs sm:text-sm text-[#ffe39c]">Level 1/4</span>
+        <div class="w-20 sm:w-28 h-2 bg-[#0b0518] rounded-full overflow-hidden border border-[#ffd97d]/30">
+          <div id="hud-quest-fill" class="h-full bg-gradient-to-r from-[#58f3ff] via-[#ff7eb3] to-[#ffd97d] transition-all duration-500" style="width: 25%"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Floating Island Adventure Map Banner (Shows Adventurer Hopping Across Levels 1 to 4) -->
+  <div id="island-journey-map" class="hidden relative z-10 w-full max-w-2xl mb-3 px-1">
+    <div class="game-hud-panel rounded-2xl px-3 py-2">
+      <svg viewBox="0 0 600 84" class="w-full h-14 sm:h-16 overflow-visible">
+        <!-- Glowing Dotted Flight Path Connecting the 4 Floating Islands -->
+        <path
+          d="M85,54 Q155,22 225,54 Q295,22 365,54 Q435,22 510,54"
+          fill="none"
+          stroke="#7ef6ff"
+          stroke-width="2"
+          stroke-dasharray="5 5"
+          opacity="0.65"
+        />
+
+        <!-- Island 1 -->
+        <g transform="translate(85, 56)">
+          <path d="M-28,0 L28,0 L20,16 Q0,22 -20,16 Z" fill="#523045" />
+          <rect x="-30" y="-4" width="60" height="7" rx="3.5" fill="#68db63" />
+          <text x="0" y="13" text-anchor="middle" fill="#ffe39c" font-family="Fredoka" font-size="9">LV 1</text>
+        </g>
+
+        <!-- Island 2 -->
+        <g transform="translate(225, 56)">
+          <path d="M-28,0 L28,0 L20,16 Q0,22 -20,16 Z" fill="#523045" />
+          <rect x="-30" y="-4" width="60" height="7" rx="3.5" fill="#68db63" />
+          <text x="0" y="13" text-anchor="middle" fill="#ffe39c" font-family="Fredoka" font-size="9">LV 2</text>
+        </g>
+
+        <!-- Island 3 -->
+        <g transform="translate(365, 56)">
+          <path d="M-28,0 L28,0 L20,16 Q0,22 -20,16 Z" fill="#523045" />
+          <rect x="-30" y="-4" width="60" height="7" rx="3.5" fill="#68db63" />
+          <text x="0" y="13" text-anchor="middle" fill="#ffe39c" font-family="Fredoka" font-size="9">LV 3</text>
+        </g>
+
+        <!-- Island 4 (Cat Sanctum & Star Tree) -->
+        <g transform="translate(510, 56)">
+          <path d="M-32,0 L32,0 L23,17 Q0,24 -23,17 Z" fill="#523045" />
+          <rect x="-34" y="-4" width="68" height="7" rx="3.5" fill="#68db63" />
+          <polygon points="18,-18 23,-8 21,-4 15,-4 13,-8" fill="#58f3ff" />
+          <text x="-4" y="13" text-anchor="middle" fill="#ffe39c" font-family="Fredoka" font-size="9">LV 4</text>
+        </g>
+
+        <!-- Cute Adventurer Character Sprite (Inspired by Screenshot Hero) -->
+        <g id="adventurer-sprite" style="transform: translate(85px, 48px); transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);">
+          <g id="adventurer-body">
+            <!-- Flowing Scarf -->
+            <path d="M-4,-14 Q-15,-16 -17,-10 Q-12,-9 -4,-11 Z" fill="#ff7eb3" />
+            <!-- Tunic Body -->
+            <rect x="-6" y="-15" width="12" height="11" rx="4" fill="#d94862" />
+            <!-- Boots -->
+            <rect x="-5" y="-4" width="4" height="4" rx="1.5" fill="#3a2038" />
+            <rect x="1" y="-4" width="4" height="4" rx="1.5" fill="#3a2038" />
+            <!-- Head & Spiky Adventurer Hair -->
+            <circle cx="0" cy="-22" r="7" fill="#ffe0c8" />
+            <path d="M-8,-23 Q-7,-33 1,-31 Q9,-32 8,-22 Q4,-26 -1,-25 Q-5,-26 -8,-23 Z" fill="#8f2d38" />
+            <!-- Glowing Eye -->
+            <circle cx="3" cy="-22" r="1.3" fill="#2a1636" />
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Main Interactive Stage Container -->
+  <main class="relative z-10 w-full max-w-2xl my-auto">
+
+    <!-- ===================================================================== -->
+    <!-- STAGE -1: MIDNIGHT TIME-LOCK COUNTDOWN (26/11/2026 00:00:00)          -->
+    <!-- ===================================================================== -->
+    <section id="stage-timelock" class="game-stage active game-hud-panel rounded-3xl p-6 sm:p-10 text-center">
+      <!-- Floating Island & Astral Clock Crest -->
+      <div class="flex justify-center mb-4 island-float">
+        <svg class="w-36 h-24" viewBox="0 0 180 120" fill="none">
+          <!-- Astral Halo Ring -->
+          <circle cx="90" cy="34" r="24" stroke="#ffd97d" stroke-width="2" stroke-dasharray="4 3" class="gear-spin" />
+          <polygon points="90,14 101,34 90,54 79,34" fill="#58f3ff" stroke="#ffffff" stroke-width="1.4" class="crystal-pulse" />
+          <!-- Pink Lotus Blossoms -->
+          <path d="M46,60 Q39,47 50,51 Q54,42 58,51 Q67,47 60,60 Z" fill="#ff7eb3" />
+          <path d="M120,60 Q113,47 124,51 Q128,42 132,51 Q141,47 134,60 Z" fill="#ff7eb3" />
+          <!-- Grassy Floating Island -->
+          <path d="M34,60 Q90,54 146,60 L127,92 Q90,108 53,92 Z" fill="#4b2d3b" stroke="#2c1824" stroke-width="2" />
+          <path d="M32,60 Q90,52 148,60 Q140,68 128,65 Q109,71 90,65 Q71,71 52,65 Q40,68 32,60 Z" fill="#5fd068" />
+          <!-- Trailing Vines -->
+          <path d="M60,86 Q55,101 62,112" stroke="#48b856" stroke-width="2.5" stroke-linecap="round" />
+          <path d="M120,84 Q126,99 118,110" stroke="#48b856" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <p class="font-game text-xs uppercase tracking-[0.25em] text-[#7ef6ff] mb-1">
+        Twilight Celestial Seal
+      </p>
+      <h1 class="font-fantasy text-2xl sm:text-3xl font-bold text-[#fff8ee] tracking-wide mb-2">
+        26 / 11 / 2026 &middot; 00:00
+      </h1>
+      <p class="text-sm sm:text-base text-[#e3d2f4] max-w-md mx-auto mb-6">
+        The portal opens at midnight on November 26 2026
+      </p>
+
+      <!-- Live Ticking Countdown Boxes (Days, Hours, Minutes, Seconds) -->
+      <div class="grid grid-cols-4 gap-2 sm:gap-3.5 max-w-md mx-auto mb-6">
+        <div class="rounded-2xl bg-[#110726]/90 border border-[#7ef6ff]/40 py-3 px-2 shadow-inner">
+          <div id="cd-days" class="font-game text-2xl sm:text-3xl font-bold text-[#7ef6ff]">00</div>
+          <div class="font-game text-[10px] sm:text-xs uppercase tracking-wider text-[#cbb7e2] mt-1">Days</div>
+        </div>
+        <div class="rounded-2xl bg-[#110726]/90 border border-[#7ef6ff]/40 py-3 px-2 shadow-inner">
+          <div id="cd-hours" class="font-game text-2xl sm:text-3xl font-bold text-[#ffd97d]">00</div>
+          <div class="font-game text-[10px] sm:text-xs uppercase tracking-wider text-[#cbb7e2] mt-1">Hours</div>
+        </div>
+        <div class="rounded-2xl bg-[#110726]/90 border border-[#7ef6ff]/40 py-3 px-2 shadow-inner">
+          <div id="cd-minutes" class="font-game text-2xl sm:text-3xl font-bold text-[#ff9ebb]">00</div>
+          <div class="font-game text-[10px] sm:text-xs uppercase tracking-wider text-[#cbb7e2] mt-1">Minutes</div>
+        </div>
+        <div class="rounded-2xl bg-[#110726]/90 border border-[#7ef6ff]/40 py-3 px-2 shadow-inner">
+          <div id="cd-seconds" class="font-game text-2xl sm:text-3xl font-bold text-[#64ffda]">00</div>
+          <div class="font-game text-[10px] sm:text-xs uppercase tracking-wider text-[#cbb7e2] mt-1">Seconds</div>
+        </div>
+      </div>
+
+      <div class="inline-flex items-center gap-2 bg-[#160b2e] border border-[#ff7eb3]/35 rounded-full px-4 py-1.5 text-xs font-game text-[#ffb8d6]">
+        <span>&#9203;</span>
+        <span>Awaiting Midnight Arrival</span>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STAGE 0: RUNIC CRYSTAL PASSCODE GATE (Code: 26112001)                 -->
+    <!-- ===================================================================== -->
+    <section id="stage-gate" class="game-stage game-hud-panel rounded-3xl p-6 sm:p-9 text-center">
+      <!-- Floating Island Crest Illustration -->
+      <div class="flex justify-center mb-3 island-float">
+        <svg class="w-32 h-22" viewBox="0 0 180 120" fill="none">
+          <!-- Glowing Cyan Crystal -->
+          <polygon points="90,10 105,38 98,58 82,58 75,38" fill="#58f3ff" stroke="#d9fcff" stroke-width="1.5" class="crystal-pulse" />
+          <polygon points="90,10 90,58 75,38" fill="#22b2d4" opacity="0.65" />
+          <!-- Pink Lotus Flowers -->
+          <path d="M50,58 Q43,45 54,49 Q58,40 62,49 Q71,45 64,58 Z" fill="#ff7eb3" />
+          <path d="M116,58 Q109,45 120,49 Q124,40 128,49 Q137,45 130,58 Z" fill="#ff7eb3" />
+          <!-- Grassy Floating Island -->
+          <path d="M36,58 Q90,52 144,58 L126,90 Q90,106 54,90 Z" fill="#4b2d3b" stroke="#2c1824" stroke-width="2" />
+          <path d="M34,58 Q90,50 146,58 Q138,66 126,63 Q108,69 90,63 Q72,69 54,63 Q42,66 34,58 Z" fill="#5fd068" />
+          <!-- Trailing Vines -->
+          <path d="M58,84 Q53,99 60,110" stroke="#48b856" stroke-width="2.5" stroke-linecap="round" />
+          <path d="M122,82 Q128,97 120,108" stroke="#48b856" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <p class="font-game text-xs uppercase tracking-[0.24em] text-[#7ef6ff] mb-1">
+        Portal of Memories
+      </p>
+      <h1 class="font-fantasy text-2xl sm:text-3xl font-bold text-[#fff8ee] tracking-wide mb-2">
+        Enter the Secret Rune Code
+      </h1>
+      <p class="text-sm sm:text-base text-[#dfcdf0] mb-5">
+        Enter the 8-digit key to awaken the floating islands
+      </p>
+
+      <!-- 8-Digit Glowing Rune Slots -->
+      <div id="passcode-slots" class="grid grid-cols-8 gap-1.5 sm:gap-2.5 max-w-sm mx-auto mb-4">
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+        <div class="rune-slot h-11 sm:h-12 rounded-xl bg-[#0e071f]/90 border border-[#7ef6ff]/40 flex items-center justify-center font-game text-lg sm:text-xl text-[#7ef6ff] shadow-inner">&bull;</div>
+      </div>
+
+      <!-- Feedback Message -->
+      <p id="gate-feedback" class="min-h-[24px] font-game text-base text-[#ff85a2] opacity-0 transition-opacity duration-300 mb-3">
+        try again love
+      </p>
+
+      <!-- Glowing Numeric Rune Keypad -->
+      <div class="grid grid-cols-3 gap-2.5 max-w-[270px] mx-auto">
+        <button type="button" data-digit="1" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">1</button>
+        <button type="button" data-digit="2" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">2</button>
+        <button type="button" data-digit="3" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">3</button>
+        <button type="button" data-digit="4" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">4</button>
+        <button type="button" data-digit="5" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">5</button>
+        <button type="button" data-digit="6" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">6</button>
+        <button type="button" data-digit="7" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">7</button>
+        <button type="button" data-digit="8" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">8</button>
+        <button type="button" data-digit="9" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">9</button>
+        <button type="button" id="keypad-clear" class="rune-key rounded-2xl py-3 font-game text-xs uppercase tracking-wider text-[#ff9ebb] cursor-pointer">Clear</button>
+        <button type="button" data-digit="0" class="rune-key rounded-2xl py-3 font-game text-xl cursor-pointer">0</button>
+        <button type="button" id="keypad-back" class="rune-key rounded-2xl py-3 font-game text-base text-[#9beeff] cursor-pointer">&larr;</button>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STAGE 1: LEVEL 1/4 - WHO FELL IN LOVE FIRST?                          -->
+    <!-- ===================================================================== -->
+    <section id="stage-q1" class="game-stage game-hud-panel rounded-3xl p-6 sm:p-10 text-center">
+      <div class="inline-flex items-center gap-2 bg-[#2b174d] border border-[#ff7eb3]/45 rounded-full px-4 py-1 mb-3">
+        <span class="text-[#ffd97d] text-xs">&#10022;</span>
+        <span class="font-game text-xs uppercase tracking-[0.2em] text-[#ffb8d6]">Level 1 of 4 &middot; Sky Meadow</span>
+      </div>
+
+      <h2 class="font-fantasy text-2xl sm:text-3xl font-bold text-[#fff8ee] mb-6">
+        Who fell in love first?
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-md mx-auto">
+        <button type="button" data-q="1" data-correct="false" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          You
+        </button>
+        <button type="button" data-q="1" data-correct="false" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          Me
+        </button>
+        <button type="button" data-q="1" data-correct="false" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          You
+        </button>
+        <button type="button" data-q="1" data-correct="true" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          You and me
+        </button>
+      </div>
+
+      <p id="q1-feedback" class="min-h-[28px] mt-5 font-game text-lg text-[#ff85a2] opacity-0 transition-opacity duration-300"></p>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STAGE 2: LEVEL 2/4 - WHO'S THE BEST GIRL IN THE WORLD?                -->
+    <!-- ===================================================================== -->
+    <section id="stage-q2" class="game-stage game-hud-panel rounded-3xl p-6 sm:p-10 text-center">
+      <div class="inline-flex items-center gap-2 bg-[#2b174d] border border-[#ff7eb3]/45 rounded-full px-4 py-1 mb-3">
+        <span class="text-[#ffd97d] text-xs">&#10022;</span>
+        <span class="font-game text-xs uppercase tracking-[0.2em] text-[#ffb8d6]">Level 2 of 4 &middot; Lotus Falls</span>
+      </div>
+
+      <h2 class="font-fantasy text-2xl sm:text-3xl font-bold text-[#fff8ee] mb-6">
+        Who's the best girl in the world?
+      </h2>
+
+      <div class="grid grid-cols-1 gap-3.5 max-w-sm mx-auto">
+        <button type="button" data-q="2" data-correct="false" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          Me
+        </button>
+        <button type="button" data-q="2" data-correct="false" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          Me
+        </button>
+        <button type="button" data-q="2" data-correct="true" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          Whitouta and Lu
+        </button>
+      </div>
+
+      <p id="q2-feedback" class="min-h-[28px] mt-5 font-game text-lg text-[#ff85a2] opacity-0 transition-opacity duration-300"></p>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STAGE 3: LEVEL 3/4 - WHAT IS MY FAVOURITE THING ABOUT YOU?            -->
+    <!-- ===================================================================== -->
+    <section id="stage-q3" class="game-stage game-hud-panel rounded-3xl p-6 sm:p-10 text-center">
+      <div class="inline-flex items-center gap-2 bg-[#2b174d] border border-[#ff7eb3]/45 rounded-full px-4 py-1 mb-3">
+        <span class="text-[#ffd97d] text-xs">&#10022;</span>
+        <span class="font-game text-xs uppercase tracking-[0.2em] text-[#ffb8d6]">Level 3 of 4 &middot; Crystal Spire</span>
+      </div>
+
+      <h2 class="font-fantasy text-2xl sm:text-3xl font-bold text-[#fff8ee] mb-6">
+        What is my favourite thing about you?
+      </h2>
+
+      <div class="grid grid-cols-1 gap-3.5 max-w-sm mx-auto">
+        <button type="button" data-q="3" data-correct="false" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          Your romantic side
+        </button>
+        <button type="button" data-q="3" data-correct="false" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          Your sleepy voice
+        </button>
+        <button type="button" data-q="3" data-correct="true" class="quest-option-btn rounded-2xl py-4 px-5 font-game text-lg cursor-pointer">
+          Your laugh
+        </button>
+      </div>
+
+      <p id="q3-feedback" class="min-h-[28px] mt-5 font-game text-lg text-[#ff85a2] opacity-0 transition-opacity duration-300"></p>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STAGE 4: LEVEL 4/4 - RESCUE ALL 8 HIDDEN CATS IN THE FANTASY WORLD    -->
+    <!-- ===================================================================== -->
+    <section id="stage-cats" class="game-stage game-hud-panel rounded-3xl p-4 sm:p-7 text-center">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div class="text-left">
+          <span class="font-game text-[11px] uppercase tracking-[0.22em] text-[#7ef6ff]">
+            Level 4 of 4 &middot; Star-Tree Sanctum
+          </span>
+          <h2 class="font-fantasy text-xl sm:text-2xl font-bold text-[#fff8ee]">
+            Rescue All 8 Hidden Cats
+          </h2>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            id="sparkle-hint-btn"
+            type="button"
+            class="font-game text-xs bg-[#2c1952] hover:bg-[#3e2373] text-[#7ef6ff] border border-[#7ef6ff]/45 rounded-full px-3 py-1.5 transition cursor-pointer"
+          >
+            &#10024; Sparkle Hint
+          </button>
+          <div class="bg-[#120826] border border-[#ffd97d]/45 rounded-full px-3.5 py-1.5 font-game text-xs sm:text-sm text-[#ffe39c]">
+            <span id="cats-found-count">0 / 8 Found</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-[#e3d2f4] text-left mb-3">
+        Search the floating islands, waterfalls, pink lotus blossoms, ancient clockwork gears, glowing cyan crystals, and star-tree branches to rescue all 8 cats.
+      </p>
+
+      <!-- Rich 2D Fantasy Platformer World SVG Scene (Matching Screenshot 88239.jpg) -->
+      <div id="fantasy-world-container" class="relative w-full rounded-2xl overflow-hidden border-2 border-[#7ef6ff]/45 shadow-2xl">
+        <svg
+          id="fantasy-world-svg"
+          viewBox="0 0 860 520"
+          class="w-full h-auto block select-none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <!-- Twilight Sunset Sky Gradient -->
+            <linearGradient id="gameSkyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#170a2e" />
+              <stop offset="30%" stop-color="#3c1a5b" />
+              <stop offset="58%" stop-color="#8b3b75" />
+              <stop offset="82%" stop-color="#e3868f" />
+              <stop offset="100%" stop-color="#ffd0a1" />
+            </linearGradient>
+
+            <!-- Glowing Horizon Sun Orb -->
+            <radialGradient id="gameSunGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fffdf0" stop-opacity="1" />
+              <stop offset="38%" stop-color="#ffe09e" stop-opacity="0.72" />
+              <stop offset="100%" stop-color="#ff9ebb" stop-opacity="0" />
+            </radialGradient>
+
+            <!-- Cyan Crystal Gradient -->
+            <linearGradient id="cyanCrystalGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#b8ffff" />
+              <stop offset="50%" stop-color="#45e6ff" />
+              <stop offset="100%" stop-color="#1c88c7" />
+            </linearGradient>
+
+            <!-- Cyan Waterfall Gradient -->
+            <linearGradient id="waterfallGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#a8ffff" stop-opacity="0.92" />
+              <stop offset="50%" stop-color="#45e6ff" stop-opacity="0.75" />
+              <stop offset="100%" stop-color="#8cf9ff" stop-opacity="0.25" />
+            </linearGradient>
+
+            <!-- Island Soil & Lush Grass Gradients -->
+            <linearGradient id="islandRockGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#5e3447" />
+              <stop offset="100%" stop-color="#2c1729" />
+            </linearGradient>
+
+            <linearGradient id="lushGrassGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8bf26b" />
+              <stop offset="100%" stop-color="#3aa84c" />
+            </linearGradient>
+
+            <!-- Magic Tree Foliage Gradient -->
+            <radialGradient id="treeCrownGrad" cx="40%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#b4ff78" />
+              <stop offset="55%" stop-color="#52c44d" />
+              <stop offset="100%" stop-color="#267339" />
+            </radialGradient>
+
+            <!-- Tabby Cap Gradient matching user photo 84001.jpg -->
+            <linearGradient id="photoTabbyGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#3a3026" />
+              <stop offset="50%" stop-color="#5d4f3f" />
+              <stop offset="100%" stop-color="#29221b" />
+            </linearGradient>
+          </defs>
+
+          <!-- 1. SKY & TWINKLING STARS -->
+          <rect x="0" y="0" width="860" height="520" fill="url(#gameSkyGrad)" />
+          <circle cx="430" cy="275" r="125" fill="url(#gameSunGlow)" />
+          <circle cx="430" cy="275" r="38" fill="#fffbe8" />
+
+          <!-- Twinkling Sky Stars -->
+          <g fill="#ffffff" opacity="0.88">
+            <circle cx="95" cy="48" r="2" />
+            <circle cx="195" cy="74" r="1.6" />
+            <circle cx="315" cy="38" r="2.2" />
+            <circle cx="465" cy="52" r="1.8" />
+            <circle cx="595" cy="36" r="2" />
+            <circle cx="745" cy="64" r="1.7" />
+            <path d="M265 82 L268 90 L276 93 L268 96 L265 104 L262 96 L254 93 L262 90 Z" fill="#fff4c2" />
+            <path d="M535 66 L537 72 L543 74 L537 76 L535 82 L533 76 L527 74 L533 72 Z" fill="#b8ffff" />
+          </g>
+
+          <!-- 2. GOLDEN-PINK CLOUDS & DISTANT SPIRES -->
+          <g opacity="0.62">
+            <ellipse cx="140" cy="240" rx="115" ry="34" fill="#f7a8b8" />
+            <ellipse cx="220" cy="255" rx="95" ry="28" fill="#ffc4b0" />
+            <ellipse cx="690" cy="235" rx="125" ry="36" fill="#f7a8b8" />
+            <ellipse cx="610" cy="252" rx="90" ry="26" fill="#ffc4b0" />
+          </g>
+          <!-- Distant Fantasy Mountain Spires -->
+          <polygon points="315,380 345,255 372,380" fill="#5e325c" opacity="0.55" />
+          <polygon points="365,380 392,285 418,380" fill="#733d6b" opacity="0.5" />
+          <polygon points="465,380 495,268 525,380" fill="#5e325c" opacity="0.55" />
+
+          <!-- 3. UPPER FLOATING STEPPING-STONE ISLANDS -->
+          <g class="island-float">
+            <path d="M250,152 L310,152 L298,176 Q280,185 262,176 Z" fill="url(#islandRockGrad)" />
+            <rect x="246" y="146" width="68" height="10" rx="5" fill="url(#lushGrassGrad)" />
+            <path d="M265,176 Q262,190 268,198" stroke="#48b856" stroke-width="2" fill="none" />
+          </g>
+
+          <g class="island-float-delayed">
+            <path d="M342,196 L402,196 L390,220 Q372,229 354,220 Z" fill="url(#islandRockGrad)" />
+            <rect x="338" y="190" width="68" height="10" rx="5" fill="url(#lushGrassGrad)" />
+          </g>
+
+          <g class="island-float">
+            <path d="M485,222 L548,222 L535,246 Q516,255 498,246 Z" fill="url(#islandRockGrad)" />
+            <rect x="481" y="216" width="71" height="10" rx="5" fill="url(#lushGrassGrad)" />
+          </g>
+
+          <!-- Center Low Floating Stepping Island -->
+          <g class="island-float-delayed">
+            <path d="M352,368 L418,368 L404,394 Q385,404 366,394 Z" fill="url(#islandRockGrad)" />
+            <rect x="348" y="362" width="74" height="11" rx="5.5" fill="url(#lushGrassGrad)" />
+          </g>
+
+          <!-- 4. UPPER LEFT WATERFALL ISLAND WITH ANCIENT GEARS -->
+          <g id="upper-left-island">
+            <!-- Clockwork Gears on Upper Left Island -->
+            <g transform="translate(82, 140)" class="gear-spin" stroke="#a882a6" stroke-width="2.5" fill="none">
+              <circle cx="0" cy="0" r="11" />
+              <circle cx="0" cy="0" r="4" />
+              <line x1="-14" y1="0" x2="14" y2="0" />
+              <line x1="0" y1="-14" x2="0" y2="14" />
+            </g>
+
+            <!-- Waterfall pouring down onto mid-left plateau -->
+            <rect x="136" y="164" width="24" height="156" fill="url(#waterfallGrad)" />
+            <line x1="142" y1="166" x2="142" y2="318" stroke="#ffffff" stroke-width="2" class="waterfall-stream" />
+            <line x1="154" y1="166" x2="154" y2="318" stroke="#b8ffff" stroke-width="2" class="waterfall-stream" />
+
+            <!-- Island Body -->
+            <path d="M32,162 L182,162 L162,202 Q107,222 52,202 Z" fill="url(#islandRockGrad)" />
+            <rect x="28" y="154" width="158" height="13" rx="6.5" fill="url(#lushGrassGrad)" />
+            <!-- Hanging Vines -->
+            <path d="M58,202 Q52,224 60,242" stroke="#48b856" stroke-width="2.5" fill="none" />
+            <path d="M115,212 Q122,235 114,254" stroke="#48b856" stroke-width="2.5" fill="none" />
+          </g>
+
+          <!-- CAT #5: Pure All-White Cat sitting gracefully beside the upper-left waterfall -->
+          <g id="cat-5" class="fantasy-cat" data-cat-id="5" data-cat-name="Pure White Cat">
+            <path d="M118 152 Q132 145 127 132" stroke="#ffffff" stroke-width="5" stroke-linecap="round" fill="none" />
+            <ellipse cx="106" cy="140" rx="13" ry="15" fill="#ffffff" />
+            <circle cx="105" cy="121" r="11" fill="#ffffff" />
+            <polygon points="95,115 97,102 103,112" fill="#ffffff" />
+            <polygon points="107,112 113,102 115,115" fill="#ffffff" />
+            <polygon points="97,113 98,106 101,112" fill="#ffc2d6" />
+            <polygon points="109,112 112,106 113,113" fill="#ffc2d6" />
+            <circle cx="101" cy="121" r="1.7" fill="#58d5ff" />
+            <circle cx="109" cy="121" r="1.7" fill="#58d5ff" />
+            <polygon points="104,124 106,124 105,126" fill="#ff9ebb" />
+          </g>
+
+          <!-- 5. FAR LEFT SMALL ISLAND WITH PINK LOTUS -->
+          <g id="far-left-island">
+            <path d="M-8,266 L76,266 L62,302 Q28,315 -8,302 Z" fill="url(#islandRockGrad)" />
+            <rect x="-10" y="258" width="90" height="12" rx="6" fill="url(#lushGrassGrad)" />
+          </g>
+
+          <!-- CAT #4: Small Black & White Kitten peeking behind the pink lotus on the far-left island -->
+          <g id="cat-4" class="fantasy-cat" data-cat-id="4" data-cat-name="Small Black & White Kitten">
+            <ellipse cx="44" cy="248" rx="9" ry="10" fill="#181724" />
+            <ellipse cx="45" cy="250" rx="4.5" ry="6" fill="#ffffff" />
+            <circle cx="45" cy="235" r="9" fill="#181724" />
+            <path d="M45 232 L40 241 L50 241 Z" fill="#ffffff" />
+            <polygon points="37,230 38,220 43,227" fill="#181724" />
+            <polygon points="47,227 52,220 53,230" fill="#181724" />
+            <circle cx="41.5" cy="235" r="1.6" fill="#ffd97d" />
+            <circle cx="48.5" cy="235" r="1.6" fill="#ffd97d" />
+          </g>
+
+          <!-- Pink Lotus Blossom in front of Cat #4 -->
+          <g transform="translate(24, 258)">
+            <path d="M-18,0 Q-24,-16 -10,-10 Q-5,-22 0,-10 Q5,-22 10,-10 Q24,-16 18,0 Z" fill="#ff7eb3" />
+            <path d="M-10,0 Q-12,-12 0,-8 Q12,-12 10,0 Z" fill="#ffc2dd" />
+          </g>
+
+          <!-- 6. MID-LEFT MAIN CLIFF PLATEAU (With Clockwork Gear & Wooden Fence) -->
+          <g id="mid-left-plateau">
+            <!-- Clockwork Gear Wheel on Left Edge -->
+            <g transform="translate(88, 294)" class="gear-spin" stroke="#9d749c" stroke-width="3" fill="none">
+              <circle cx="0" cy="0" r="16" />
+              <circle cx="0" cy="0" r="6" />
+              <line x1="-20" y1="0" x2="20" y2="0" />
+              <line x1="0" y1="-20" x2="0" y2="20" />
+              <line x1="-14" y1="-14" x2="14" y2="14" />
+              <line x1="14" y1="-14" x2="-14" y2="14" />
+            </g>
+
+            <path d="M35,320 L315,320 L282,405 Q175,432 68,402 Z" fill="url(#islandRockGrad)" />
+            <rect x="30" y="312" width="290" height="14" rx="7" fill="url(#lushGrassGrad)" />
+            <!-- Decorative Wooden Fence -->
+            <g stroke="#6b3e3e" stroke-width="3.5" stroke-linecap="round">
+              <line x1="168" y1="286" x2="168" y2="313" />
+              <line x1="184" y1="286" x2="184" y2="313" />
+              <line x1="200" y1="286" x2="200" y2="313" />
+              <line x1="160" y1="294" x2="208" y2="294" />
+              <line x1="160" y1="304" x2="208" y2="304" />
+            </g>
+            <!-- Trailing Vines -->
+            <path d="M98,406 Q92,432 102,448" stroke="#48b856" stroke-width="3" fill="none" />
+            <path d="M235,412 Q244,438 234,456" stroke="#48b856" stroke-width="3" fill="none" />
+          </g>
+
+          <!-- CAT #1: Large Black & White Cat #1 sitting proudly near the wooden fence on mid-left plateau -->
+          <g id="cat-1" class="fantasy-cat" data-cat-id="1" data-cat-name="Large Black & White Cat I">
+            <path d="M254 310 Q272 302 266 286" stroke="#181724" stroke-width="6" stroke-linecap="round" fill="none" />
+            <ellipse cx="236" cy="296" rx="18" ry="16" fill="#181724" />
+            <ellipse cx="230" cy="299" rx="9" ry="11" fill="#ffffff" />
+            <circle cx="230" cy="276" r="13" fill="#181724" />
+            <path d="M230 272 L223 286 L237 286 Z" fill="#ffffff" />
+            <polygon points="218,268 220,254 227,264" fill="#181724" />
+            <polygon points="233,264 240,254 242,268" fill="#181724" />
+            <circle cx="225.5" cy="276" r="1.9" fill="#ffd97d" />
+            <circle cx="234.5" cy="276" r="1.9" fill="#ffd97d" />
+          </g>
+
+          <!-- 7. RIGHT MAGIC TREE ISLAND, ANCIENT RUNE BLOCKS & GLOWING CRYSTALS -->
+          <g id="right-tree-island">
+            <!-- Lush Twisted Magic Tree -->
+            <path
+              d="M665,305 Q650,245 675,205 Q692,180 668,158"
+              stroke="#6e3b36"
+              stroke-width="24"
+              stroke-linecap="round"
+              fill="none"
+            />
+            <path
+              d="M672,225 Q708,205 724,182"
+              stroke="#6e3b36"
+              stroke-width="14"
+              stroke-linecap="round"
+              fill="none"
+            />
+            <!-- Glowing Canopy -->
+            <circle cx="655" cy="145" r="56" fill="url(#treeCrownGrad)" />
+            <circle cx="712" cy="155" r="46" fill="url(#treeCrownGrad)" />
+            <circle cx="615" cy="168" r="40" fill="url(#treeCrownGrad)" />
+            <!-- Glowing Tree Star Blossoms -->
+            <path d="M665 128 L669 138 L679 142 L669 146 L665 156 L661 146 L651 142 L661 138 Z" fill="#b8ffff" class="crystal-pulse" />
+            <circle cx="626" cy="158" r="4" fill="#ff9ebb" />
+            <circle cx="715" cy="146" r="4.5" fill="#ffe082" />
+
+            <!-- Island Soil & Grass Platform -->
+            <path d="M535,306 L825,306 L795,415 Q680,445 565,412 Z" fill="url(#islandRockGrad)" />
+            <rect x="530" y="298" width="300" height="15" rx="7.5" fill="url(#lushGrassGrad)" />
+
+            <!-- Ancient Glowing Rune Blocks -->
+            <g transform="translate(612, 266)">
+              <rect x="0" y="0" width="32" height="32" rx="6" fill="#4b3b5c" stroke="#9beeff" stroke-width="2" />
+              <circle cx="16" cy="16" r="7" fill="#58f3ff" class="crystal-pulse" />
+            </g>
+            <g transform="translate(650, 266)">
+              <rect x="0" y="0" width="32" height="32" rx="6" fill="#4b3b5c" stroke="#9beeff" stroke-width="2" />
+              <circle cx="16" cy="16" r="7" fill="#58f3ff" class="crystal-pulse" />
+            </g>
+
+            <!-- Glowing Cyan Waterfall pouring from Right Island -->
+            <rect x="702" y="306" width="24" height="162" fill="url(#waterfallGrad)" />
+            <line x1="708" y1="308" x2="708" y2="466" stroke="#ffffff" stroke-width="2" class="waterfall-stream" />
+            <line x1="720" y1="308" x2="720" y2="466" stroke="#b8ffff" stroke-width="2" class="waterfall-stream" />
+
+            <!-- Luminous Blue & Violet Crystal Spires -->
+            <polygon points="714,242 726,274 722,300 706,300 702,274" fill="url(#cyanCrystalGrad)" class="crystal-pulse" />
+            <polygon points="768,255 778,280 775,300 761,300 758,280" fill="#d38cff" stroke="#f6d9ff" stroke-width="1.2" />
+          </g>
+
+          <!-- CAT #7: Very Tiny Baby Kitten identical to #6 (Brown/Grey Tabby Cap & White Body from photo 84001.jpg) nestled on the glowing tree branch -->
+          <g id="cat-7" class="fantasy-cat" data-cat-id="7" data-cat-name="Baby Tabby & White Kitten">
+            <ellipse cx="705" cy="196" rx="9" ry="9" fill="#ffffff" />
+            <ellipse cx="701" cy="203" rx="3.5" ry="2.2" fill="#ffffff" />
+            <ellipse cx="709" cy="203" rx="3.5" ry="2.2" fill="#ffffff" />
+            <circle cx="705" cy="184" r="8.8" fill="#ffffff" />
+            <!-- Brown/Grey Tabby Cap & Ears -->
+            <path d="M696.5 183 Q705 174 713.5 183 Q709 185 705 180 Q701 185 696.5 183 Z" fill="url(#photoTabbyGrad)" />
+            <polygon points="697,179 698,170 703,176" fill="#3a3026" />
+            <polygon points="707,176 712,170 713,179" fill="#3a3026" />
+            <circle cx="702" cy="184.5" r="1.4" fill="#2b221a" />
+            <circle cx="708" cy="184.5" r="1.4" fill="#2b221a" />
+            <circle cx="705" cy="187" r="1.1" fill="#ff9ebb" />
+          </g>
+
+          <!-- CAT #6: Large Brown/Grey Tabby & White Cat (Exact match to uploaded photo 84001.jpg) resting beside the glowing rune blocks -->
+          <g id="cat-6" class="fantasy-cat" data-cat-id="6" data-cat-name="Large Tabby & White Cat">
+            <!-- Fluffy White Chest & Body -->
+            <ellipse cx="578" cy="284" rx="23" ry="17" fill="#ffffff" />
+            <!-- Tabby Saddle Patch -->
+            <path d="M585 269 Q599 271 601 286 Q590 284 585 269 Z" fill="url(#photoTabbyGrad)" />
+            <!-- Extended White Front Paws -->
+            <ellipse cx="556" cy="296" rx="12" ry="5" fill="#ffffff" stroke="#e6e0f0" stroke-width="0.8" />
+            <ellipse cx="570" cy="298" rx="10" ry="4.5" fill="#ffffff" stroke="#e6e0f0" stroke-width="0.8" />
+            <!-- Fluffy Round Head -->
+            <circle cx="568" cy="262" r="14.5" fill="#ffffff" />
+            <!-- Brown/Grey Tabby Cap Over Eyes & Forehead -->
+            <path d="M554 261 Q568 246 582 261 Q575 265 568 257 Q561 265 554 261 Z" fill="url(#photoTabbyGrad)" />
+            <!-- Tabby Ears -->
+            <polygon points="555,254 556,240 564,250" fill="#3a3026" />
+            <polygon points="572,250 580,240 581,254" fill="#3a3026" />
+            <!-- Forehead Stripes -->
+            <line x1="565" y1="250" x2="565" y2="255" stroke="#1e1812" stroke-width="1.2" />
+            <line x1="568" y1="249" x2="568" y2="254" stroke="#1e1812" stroke-width="1.2" />
+            <line x1="571" y1="250" x2="571" y2="255" stroke="#1e1812" stroke-width="1.2" />
+            <!-- Half-lidded Gentle Eyes & Pink Nose -->
+            <ellipse cx="563" cy="262" rx="2.1" ry="1.4" fill="#2b221a" />
+            <ellipse cx="573" cy="262" rx="2.1" ry="1.4" fill="#2b221a" />
+            <polygon points="566.5,266 569.5,266 568,268.2" fill="#ff9ebb" />
+          </g>
+
+          <!-- 8. FAR RIGHT HIGH FLOATING ISLAND -->
+          <g id="far-right-island">
+            <path d="M775,212 L865,212 L855,244 Q820,256 785,244 Z" fill="url(#islandRockGrad)" />
+            <rect x="772" y="204" width="96" height="12" rx="6" fill="url(#lushGrassGrad)" />
+          </g>
+
+          <!-- CAT #2: Large Black & White Cat #2 perched on the high right floating island -->
+          <g id="cat-2" class="fantasy-cat" data-cat-id="2" data-cat-name="Large Black & White Cat II">
+            <path d="M834 202 Q848 194 844 178" stroke="#181724" stroke-width="5.5" stroke-linecap="round" fill="none" />
+            <ellipse cx="816" cy="189" rx="17" ry="15" fill="#181724" />
+            <ellipse cx="810" cy="192" rx="8.5" ry="10" fill="#ffffff" />
+            <circle cx="810" cy="170" r="12.5" fill="#181724" />
+            <path d="M810 166 L803 180 L817 180 Z" fill="#ffffff" />
+            <polygon points="798,162 800,149 807,158" fill="#181724" />
+            <polygon points="813,158 820,149 822,162" fill="#181724" />
+            <circle cx="805.5" cy="170" r="1.8" fill="#ffd97d" />
+            <circle cx="814.5" cy="170" r="1.8" fill="#ffd97d" />
+          </g>
+
+          <!-- 9. LUSH FOREGROUND MEADOW FLOOR WITH CRYSTALS, LOTUS & BUSHES -->
+          <g id="foreground-meadow">
+            <rect x="0" y="468" width="860" height="52" fill="#2c1729" />
+            <path d="M0,468 Q215,456 430,468 Q645,480 860,468 L860,484 L0,484 Z" fill="url(#lushGrassGrad)" />
+
+            <!-- Foreground Left Glowing Cyan Crystal & Lotus -->
+            <polygon points="88,402 104,438 98,468 78,468 72,438" fill="url(#cyanCrystalGrad)" class="crystal-pulse" />
+            <g transform="translate(138, 468)">
+              <path d="M-24,0 Q-32,-20 -14,-13 Q-6,-28 0,-13 Q6,-28 14,-13 Q32,-20 24,0 Z" fill="#ff7eb3" />
+              <path d="M-12,0 Q-15,-14 0,-10 Q15,-14 12,0 Z" fill="#ffc2dd" />
+            </g>
+
+            <!-- Center Star Gem Relic -->
+            <g transform="translate(430, 454)" class="crystal-pulse">
+              <polygon points="0,-16 5,-5 16,0 5,5 0,16 -5,5 -16,0 -5,-5" fill="#7ef6ff" stroke="#ffffff" stroke-width="1" />
+            </g>
+
+            <!-- Foreground Right Lotus -->
+            <g transform="translate(772, 468)">
+              <path d="M-24,0 Q-32,-20 -14,-13 Q-6,-28 0,-13 Q6,-28 14,-13 Q32,-20 24,0 Z" fill="#ff7eb3" />
+              <path d="M-12,0 Q-15,-14 0,-10 Q15,-14 12,0 Z" fill="#ffc2dd" />
+            </g>
+          </g>
+
+          <!-- CAT #3: Large Black & White Cat #3 hiding in the foreground meadow beside the center star gem -->
+          <g id="cat-3" class="fantasy-cat" data-cat-id="3" data-cat-name="Large Black & White Cat III">
+            <path d="M322 466 Q304 458 310 442" stroke="#181724" stroke-width="6" stroke-linecap="round" fill="none" />
+            <ellipse cx="342" cy="452" rx="19" ry="15" fill="#181724" />
+            <ellipse cx="349" cy="455" rx="9" ry="10" fill="#ffffff" />
+            <circle cx="350" cy="434" r="13" fill="#181724" />
+            <path d="M350 430 L343 444 L357 444 Z" fill="#ffffff" />
+            <polygon points="338,426 340,412 347,422" fill="#181724" />
+            <polygon points="353,422 360,412 362,426" fill="#181724" />
+            <circle cx="345.5" cy="434" r="1.9" fill="#ffd97d" />
+            <circle cx="354.5" cy="434" r="1.9" fill="#ffd97d" />
+          </g>
+
+          <!-- CAT #8: Medium-Large Black Cat with a Few White Patches resting near the right meadow bush -->
+          <g id="cat-8" class="fantasy-cat" data-cat-id="8" data-cat-name="Black Cat with White Patches">
+            <!-- Black Tail with White Tip -->
+            <path d="M654 464 Q674 455 669 439" stroke="#15141f" stroke-width="5.5" stroke-linecap="round" fill="none" />
+            <circle cx="669" cy="439" r="3" fill="#ffffff" />
+            <!-- Predominantly Black Body -->
+            <ellipse cx="632" cy="452" rx="21" ry="15" fill="#15141f" />
+            <!-- Small White Chest Locket & White Paws -->
+            <ellipse cx="618" cy="454" rx="6" ry="9" fill="#ffffff" />
+            <ellipse cx="615" cy="465" rx="5.5" ry="3" fill="#ffffff" />
+            <ellipse cx="626" cy="466" rx="5.5" ry="3" fill="#ffffff" />
+            <!-- Black Head with Small White Chin Patch -->
+            <circle cx="617" cy="434" r="12.5" fill="#15141f" />
+            <ellipse cx="617" cy="442" rx="4.5" ry="2.8" fill="#ffffff" />
+            <!-- Ears -->
+            <polygon points="606,426 607,412 614,422" fill="#15141f" />
+            <polygon points="620,422 627,412 628,426" fill="#15141f" />
+            <!-- Bright Golden Eyes -->
+            <circle cx="612.5" cy="433.5" r="1.8" fill="#ffd97d" />
+            <circle cx="621.5" cy="433.5" r="1.8" fill="#ffd97d" />
+          </g>
+        </svg>
+      </div>
+
+      <!-- 8 Cats Rescue Roster Strip -->
+      <div id="cats-roster-grid" class="grid grid-cols-4 sm:grid-cols-8 gap-1.5 sm:gap-2 mt-4">
+        <!-- Dynamically populated by JS -->
+      </div>
+
+      <!-- Unlock Final Portal Button -->
+      <div class="mt-5">
+        <button
+          id="unlock-scroll-btn"
+          type="button"
+          disabled
+          class="quest-option-btn rounded-full px-8 py-3 font-game text-sm sm:text-base tracking-wide opacity-45 cursor-not-allowed"
+        >
+          Rescue All 8 Cats to Open Portal
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STAGE 5: CRYSTAL TREASURE CHEST, RELIC PHOTO & SCATTERED LETTERS      -->
+    <!-- ===================================================================== -->
+    <section id="stage-chest" class="game-stage game-hud-panel rounded-3xl p-5 sm:p-9 text-center">
+      <!-- Closed Glowing Crystal Chest on Floating Lotus Island -->
+      <div id="chest-closed-view">
+        <div class="inline-flex items-center gap-2 bg-[#2b174d] border border-[#7ef6ff]/45 rounded-full px-4 py-1 mb-2">
+          <span class="text-[#ffd97d] text-xs">&#10022;</span>
+          <span class="font-game text-xs uppercase tracking-[0.22em] text-[#9beeff]">Bonus Sanctum &middot; Relic Chest</span>
+        </div>
+        <h2 class="font-fantasy text-2xl sm:text-3xl font-bold text-[#fff8ee] mb-2">
+          The Astral Chest Awaits
+        </h2>
+        <p class="text-sm sm:text-base text-[#e3d2f4] mb-6">
+          Tap the glowing game chest on the floating island to release its hidden treasure
+        </p>
+
+        <div
+          id="open-chest-trigger"
+          role="button"
+          tabindex="0"
+          aria-label="Open fantasy treasure chest"
+          class="treasure-portal-box max-w-sm mx-auto rounded-3xl p-6 sm:p-8"
+        >
+          <!-- Fantasy Treasure Chest on Floating Crystal & Lotus Island -->
+          <svg class="w-48 h-36 mx-auto island-float overflow-visible" viewBox="0 0 220 165" fill="none">
+            <!-- Twilight Aura Behind Chest -->
+            <circle cx="110" cy="68" r="56" fill="#58f3ff" opacity="0.14" />
+            <circle cx="110" cy="68" r="38" fill="#ff7eb3" opacity="0.14" />
+
+            <!-- Cyan Crystals on Island -->
+            <polygon points="36,78 44,98 41,112 31,112 28,98" fill="#58f3ff" stroke="#d9fcff" stroke-width="1.2" class="crystal-pulse" />
+            <polygon points="184,82 191,100 188,112 180,112 177,100" fill="#d38cff" stroke="#f6d9ff" stroke-width="1.2" />
+
+            <!-- Pink Lotus Blossoms -->
+            <path d="M52,112 Q46,100 56,104 Q60,96 64,104 Q72,100 66,112 Z" fill="#ff7eb3" />
+            <path d="M152,112 Q146,100 156,104 Q160,96 164,104 Q172,100 166,112 Z" fill="#ff7eb3" />
+
+            <!-- Floating Grassy Island Base -->
+            <path d="M24,112 Q110,104 196,112 L172,144 Q110,162 48,144 Z" fill="#4b2d3b" stroke="#2c1824" stroke-width="2" />
+            <path d="M22,112 Q110,103 198,112 Q188,120 174,117 Q142,123 110,117 Q78,123 46,117 Q32,120 22,112 Z" fill="#5fd068" />
+            <path d="M62,142 Q56,154 63,163" stroke="#48b856" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M158,140 Q164,152 156,161" stroke="#48b856" stroke-width="2.5" stroke-linecap="round" />
+
+            <!-- Chest Base -->
+            <rect x="64" y="68" width="92" height="44" rx="8" fill="#4b2859" stroke="#ffd97d" stroke-width="2.5" />
+            <rect x="80" y="68" width="8" height="44" fill="#ffd97d" opacity="0.85" />
+            <rect x="132" y="68" width="8" height="44" fill="#ffd97d" opacity="0.85" />
+
+            <!-- Chest Lid (Animates upward on open) -->
+            <g id="chest-lid-group">
+              <path d="M62,68 Q62,40 110,40 Q158,40 158,68 Z" fill="#68367a" stroke="#ffd97d" stroke-width="2.5" />
+              <rect x="80" y="42" width="8" height="26" fill="#ffd97d" opacity="0.85" />
+              <rect x="132" y="42" width="8" height="26" fill="#ffd97d" opacity="0.85" />
+              <!-- Glowing Cyan Crystal Lock -->
+              <polygon points="110,54 120,67 110,80 100,67" fill="#58f3ff" stroke="#ffffff" stroke-width="1.5" class="crystal-pulse" />
+            </g>
+          </svg>
+          <p class="font-game text-sm text-[#ffe39c] mt-2 tracking-wide">
+            &#10024; Tap to Open Chest &#10024;
+          </p>
+        </div>
+      </div>
+
+      <!-- Opened Chest Treasure: Revealed Photo (73114.jpg) + Scattered Starlight Letters -->
+      <div id="chest-opened-view" class="hidden">
+        <div class="inline-flex items-center gap-2 bg-[#2b174d] border border-[#ffd97d]/45 rounded-full px-4 py-1 mb-2">
+          <span class="text-[#7ef6ff] text-xs">&#10024;</span>
+          <span class="font-game text-xs uppercase tracking-[0.2em] text-[#ffe39c]">Starlight Relic Unlocked</span>
+        </div>
+        <h2 class="font-fantasy text-xl sm:text-2xl font-bold text-[#fff8ee] mb-1">
+          Gather the Scattered Starlight Letters
+        </h2>
+        <p class="text-xs sm:text-sm text-[#e3d2f4] mb-4">
+          Tap the floating glowing letters around the treasure to assemble the hidden wish
+        </p>
+
+        <!-- Revealed Photograph 73114.jpg inside Ornate Fantasy Crystal Frame -->
+        <div class="relic-photo-reveal relative max-w-[230px] sm:max-w-[250px] mx-auto mb-5">
+          <div class="p-2 rounded-2xl bg-gradient-to-b from-[#7ef6ff]/60 via-[#ff7eb3]/50 to-[#ffd97d]/70 shadow-[0_0_35px_rgba(88,243,255,0.4)]">
+            <div class="relative rounded-xl overflow-hidden bg-[#160b2e] border border-[#fff8ee]/40">
+              <img
+                src="73114.jpg"
+                alt="Cherished Birthday Memory"
+                onerror="this.onerror=null; this.src='https://placehold.co/400x500/2d134f/ffd97d?text=Happy+Birthday+My+Love';"
+                class="w-full h-56 sm:h-64 object-cover block"
+              />
+              <div class="absolute inset-0 pointer-events-none ring-1 ring-inset ring-white/25 rounded-xl"></div>
+            </div>
+          </div>
+          <!-- Decorative Corner Star Gems -->
+          <span class="absolute -top-2.5 -left-2.5 text-[#7ef6ff] text-lg drop-shadow">&#10022;</span>
+          <span class="absolute -top-2.5 -right-2.5 text-[#ffd97d] text-lg drop-shadow">&#10022;</span>
+          <span class="absolute -bottom-2.5 -left-2.5 text-[#ff7eb3] text-lg drop-shadow">&#10022;</span>
+          <span class="absolute -bottom-2.5 -right-2.5 text-[#7ef6ff] text-lg drop-shadow">&#10022;</span>
+        </div>
+
+        <!-- Assembled Phrase Banner: "happy birthday to the light of my life" -->
+        <div class="bg-[#120826]/90 border border-[#ffd97d]/40 rounded-2xl p-3 sm:p-4 mb-4">
+          <div class="flex items-center justify-between mb-2 px-1">
+            <span class="font-game text-[11px] uppercase tracking-widest text-[#9beeff]">Starlight Wish Banner</span>
+            <span id="letters-progress-badge" class="font-game text-xs text-[#ffe39c]">0 / 31 Letters</span>
+          </div>
+          <div id="assembled-phrase-container" class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            <!-- Word & Letter Slots Populated Dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Scattered Floating Letters Pool -->
+        <div id="scattered-letters-pool-wrapper" class="bg-[#190c33]/85 border border-[#7ef6ff]/35 rounded-2xl p-3.5 sm:p-4 mb-4">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="font-game text-xs text-[#dfcdf0]">Tap each floating letter to gather it:</span>
+            <button
+              id="gather-all-letters-btn"
+              type="button"
+              class="font-game text-xs bg-[#2c1952] hover:bg-[#3e2373] text-[#7ef6ff] border border-[#7ef6ff]/45 rounded-full px-3 py-1 transition cursor-pointer"
+            >
+              &#10024; Gather All
+            </button>
+          </div>
+          <div id="scattered-letters-pool" class="flex flex-wrap items-center justify-center gap-2 min-h-[56px]">
+            <!-- Scattered Letter Tiles Populated Dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Unlock Final Birthday Scroll Button (Appears once all letters are gathered) -->
+        <div class="mt-4">
+          <button
+            id="enter-final-scroll-btn"
+            type="button"
+            disabled
+            class="quest-option-btn rounded-full px-8 py-3.5 font-game text-sm sm:text-base tracking-wide opacity-45 cursor-not-allowed"
+          >
+            Gather All Letters to Open Final Scroll
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- STAGE 6: FINAL UNROLLING BIRTHDAY SCROLL                              -->
+    <!-- ===================================================================== -->
+    <section id="stage-final" class="game-stage text-center">
+      <!-- Unfurled Luminous Birthday Scroll -->
+      <div id="scroll-opened-view" class="luminous-scroll rounded-3xl p-6 sm:p-11 text-left">
+        <div class="text-center mb-7">
+          <span class="inline-block font-game text-xs uppercase tracking-[0.26em] text-[#7ef6ff] bg-[#160b2e] border border-[#7ef6ff]/40 rounded-full px-4 py-1 mb-2">
+            November 26 &middot; Happy Birthday
+          </span>
+          <h3 class="font-fantasy text-lg sm:text-xl text-[#ffe39c] mt-2 tracking-wide">
+            happy birthday to the light of my life
+          </h3>
+          <div class="h-px w-36 mx-auto bg-gradient-to-r from-transparent via-[#ffd97d] to-transparent mt-3"></div>
+        </div>
+
+        <!-- Exact English Birthday Message WITHOUT ANY PERIODS OR COMMAS -->
+        <div class="space-y-5 text-lg sm:text-[21px] leading-[1.82] text-[#fff8ee] font-medium">
+          <p>
+            Four years have passed and still every time I try to put you into a sentence I feel what we have is bigger than language can hold On your birthday today I am not looking for words to decorate meaning I want to tell you what remains when everything around us grows quiet and what resembles us in its truest form
+          </p>
+          <p>
+            You are not just someone I share time with you are the calm I return to when the world feels heavy and the space where I need no defense or explanation I love your presence even from afar I love that quiet space we build away from the noise and I love that there is something in you that steadies the heart without a sound
+          </p>
+          <p>
+            I know life is not a straight line and each of us carries weights and battles others never see yet being with you makes things easier to bear and gives tomorrow a softer closer meaning In you there is a steady grounding no one can buy and a truth that feels like what I always search for when meaning slips away
+          </p>
+          <p>
+            Happy birthday to the one closest to my soul and the most lasting inside me I wish you a calmer gentler year one worthy of your heart that brings you peace and joy
+          </p>
+        </div>
+
+        <div class="h-px w-36 mx-auto bg-gradient-to-r from-transparent via-[#ff7eb3] to-transparent my-8"></div>
+
+        <div class="text-center">
+          <button
+            id="play-again-btn"
+            type="button"
+            class="font-game text-xs uppercase tracking-[0.2em] text-[#bcefff] hover:text-[#ffd97d] transition cursor-pointer py-2 px-4"
+          >
+            &larr; Play Quest Again
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Subtle Fantasy Footer -->
+  <footer class="relative z-10 mt-5 text-center">
+    <p class="font-game text-[11px] tracking-[0.2em] uppercase text-[#fff2e6]/60">
+      Realm of Two Hearts
+    </p>
+  </footer>
+
+  <script>
+    // =========================================================
+    // MIDNIGHT TIME-LOCK LOGIC (NOVEMBER 26, 2026 AT 00:00:00)
+    // =========================================================
+    const TARGET_OPEN_TIMESTAMP = new Date(2026, 10, 26, 0, 0, 0, 0).getTime();
+    let isCreatorBypassActive = false;
+    let hasTimeLockOpened = false;
+
+    const stageTimelock = document.getElementById("stage-timelock");
+    const creatorToggleBtn = document.getElementById("creator-toggle-btn");
+    const cdDaysEl = document.getElementById("cd-days");
+    const cdHoursEl = document.getElementById("cd-hours");
+    const cdMinutesEl = document.getElementById("cd-minutes");
+    const cdSecondsEl = document.getElementById("cd-seconds");
+
+    function padZero(num) {
+      return String(Math.max(0, num)).padStart(2, "0");
+    }
+
+    function openTimeLockToPasscodeGate(fromCreatorBypass = false) {
+      if (hasTimeLockOpened && !fromCreatorBypass) return;
+      hasTimeLockOpened = true;
+
+      hudRealmLabel.textContent = "Crystal Gate Locked";
+      if (!fromCreatorBypass) {
+        creatorToggleBtn.classList.add("hidden");
+      }
+
+      if (stageTimelock.classList.contains("active")) {
+        stageTimelock.style.opacity = "0";
+        stageTimelock.style.transform = "scale(0.96) translateY(-10px)";
+        setTimeout(() => {
+          stageTimelock.classList.remove("active");
+          stageGate.classList.add("active");
+          void stageGate.offsetWidth;
+          stageGate.style.opacity = "1";
+          stageGate.style.transform = "scale(1) translateY(0)";
+        }, 300);
+      }
+    }
+
+    function returnToTimeLockView() {
+      isCreatorBypassActive = false;
+      hasTimeLockOpened = false;
+      enteredCode = "";
+      renderPasscodeSlots();
+      gateFeedback.classList.add("opacity-0");
+
+      hudRealmLabel.textContent = "Midnight Portal Sealed";
+      hudQuestTracker.classList.add("hidden");
+      hudQuestTracker.classList.remove("flex");
+      islandJourneyMap.classList.add("hidden");
+
+      document.querySelectorAll(".game-stage").forEach((sec) => {
+        sec.classList.remove("active");
+        sec.style.opacity = "0";
+      });
+
+      stageTimelock.classList.add("active");
+      void stageTimelock.offsetWidth;
+      stageTimelock.style.opacity = "1";
+      stageTimelock.style.transform = "scale(1) translateY(0)";
+    }
+
+    function updateCountdownTick() {
+      const now = Date.now();
+      const diff = TARGET_OPEN_TIMESTAMP - now;
+
+      if (diff <= 0) {
+        cdDaysEl.textContent = "00";
+        cdHoursEl.textContent = "00";
+        cdMinutesEl.textContent = "00";
+        cdSecondsEl.textContent = "00";
+        if (!hasTimeLockOpened) {
+          openTimeLockToPasscodeGate(false);
+        }
+        return;
+      }
+
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      cdDaysEl.textContent = padZero(days);
+      cdHoursEl.textContent = padZero(hours);
+      cdMinutesEl.textContent = padZero(minutes);
+      cdSecondsEl.textContent = padZero(seconds);
+    }
+
+    creatorToggleBtn.addEventListener("click", () => {
+      if (!isCreatorBypassActive) {
+        isCreatorBypassActive = true;
+        creatorToggleBtn.innerHTML = "&#9203; Time-Lock View";
+        burstSparkles(window.innerWidth / 2, window.innerHeight / 3, 24);
+        openTimeLockToPasscodeGate(true);
+      } else {
+        creatorToggleBtn.innerHTML = "&#10024; Creator Unlock";
+        returnToTimeLockView();
+      }
+    });
+
+    // =========================================================
+    // PASSCODE GATE LOGIC (26112001)
+    // =========================================================
+    const SECRET_PASSCODE = "26112001";
+    let enteredCode = "";
+
+    const stageGate = document.getElementById("stage-gate");
+    const runeSlots = document.querySelectorAll(".rune-slot");
+    const gateFeedback = document.getElementById("gate-feedback");
+    const hudRealmLabel = document.getElementById("hud-realm-label");
+    const hudQuestTracker = document.getElementById("hud-quest-tracker");
+    const hudQuestText = document.getElementById("hud-quest-text");
+    const hudQuestFill = document.getElementById("hud-quest-fill");
+    const islandJourneyMap = document.getElementById("island-journey-map");
+    const adventurerSprite = document.getElementById("adventurer-sprite");
+    const adventurerBody = document.getElementById("adventurer-body");
+
+    const ISLAND_X_COORDS = {
+      1: 85,
+      2: 225,
+      3: 365,
+      4: 510,
+      5: 510,
+      6: 510
+    };
+
+    function moveAdventurerToLevel(levelNum) {
+      const targetX = ISLAND_X_COORDS[levelNum] || 85;
+      adventurerSprite.style.transform = `translate(${targetX}px, 48px)`;
+      adventurerBody.classList.remove("hero-hop");
+      void adventurerBody.offsetWidth;
+      adventurerBody.classList.add("hero-hop");
+    }
+
+    function renderPasscodeSlots() {
+      runeSlots.forEach((slot, idx) => {
+        if (idx < enteredCode.length) {
+          slot.textContent = enteredCode[idx];
+          slot.classList.add("border-[#ffd97d]", "text-[#ffd97d]", "bg-[#221142]");
+        } else {
+          slot.innerHTML = "&bull;";
+          slot.classList.remove("border-[#ffd97d]", "text-[#ffd97d]", "bg-[#221142]");
+        }
+      });
+    }
+
+    function handleDigitInput(digit) {
+      if (enteredCode.length >= 8) return;
+      enteredCode += digit;
+      renderPasscodeSlots();
+
+      if (enteredCode.length === 8) {
+        if (enteredCode === SECRET_PASSCODE) {
+          gateFeedback.textContent = "Portal Awakened!";
+          gateFeedback.classList.remove("text-[#ff85a2]");
+          gateFeedback.classList.add("text-[#64ffda]");
+          gateFeedback.classList.remove("opacity-0");
+          burstSparkles(window.innerWidth / 2, window.innerHeight / 2, 34);
+
+          setTimeout(() => {
+            hudRealmLabel.textContent = "Realm Unlocked";
+            hudQuestTracker.classList.remove("hidden");
+            hudQuestTracker.classList.add("flex");
+            islandJourneyMap.classList.remove("hidden");
+            moveAdventurerToLevel(1);
+            switchStage("stage-gate", "stage-q1", 1);
+          }, 600);
+        } else {
+          stageGate.classList.remove("shake-card");
+          void stageGate.offsetWidth;
+          stageGate.classList.add("shake-card");
+
+          gateFeedback.textContent = "try again love";
+          gateFeedback.classList.remove("text-[#64ffda]");
+          gateFeedback.classList.add("text-[#ff85a2]");
+          gateFeedback.classList.remove("opacity-0");
+
+          setTimeout(() => {
+            enteredCode = "";
+            renderPasscodeSlots();
+          }, 550);
+        }
+      }
+    }
+
+    document.querySelectorAll(".rune-key[data-digit]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        handleDigitInput(btn.getAttribute("data-digit"));
+      });
+    });
+
+    document.getElementById("keypad-clear").addEventListener("click", () => {
+      enteredCode = "";
+      gateFeedback.classList.add("opacity-0");
+      renderPasscodeSlots();
+    });
+
+    document.getElementById("keypad-back").addEventListener("click", () => {
+      enteredCode = enteredCode.slice(0, -1);
+      renderPasscodeSlots();
+    });
+
+    // Support physical keyboard numbers while on passcode screen
+    window.addEventListener("keydown", (e) => {
+      if (!stageGate.classList.contains("active")) return;
+      if (/^[0-9]$/.test(e.key)) {
+        handleDigitInput(e.key);
+      } else if (e.key === "Backspace") {
+        enteredCode = enteredCode.slice(0, -1);
+        renderPasscodeSlots();
+      }
+    });
+
+    // =========================================================
+    // STAGE TRANSITIONS & QUEST TRACKER
+    // =========================================================
+    function switchStage(fromId, toId, questNumber) {
+      const fromEl = document.getElementById(fromId);
+      const toEl = document.getElementById(toId);
+
+      fromEl.style.opacity = "0";
+      fromEl.style.transform = "scale(0.96) translateY(-10px)";
+
+      setTimeout(() => {
+        fromEl.classList.remove("active");
+        toEl.classList.add("active");
+        void toEl.offsetWidth;
+        toEl.style.opacity = "1";
+        toEl.style.transform = "scale(1) translateY(0)";
+
+        moveAdventurerToLevel(questNumber);
+
+        if (questNumber <= 4) {
+          hudQuestText.textContent = `Level ${questNumber}/4`;
+          hudQuestFill.style.width = `${questNumber * 25}%`;
+        } else if (questNumber === 5) {
+          hudQuestText.textContent = "Relic Chest";
+          hudQuestFill.style.width = "100%";
+        } else {
+          hudQuestText.textContent = "Complete";
+          hudQuestFill.style.width = "100%";
+        }
+      }, 320);
+    }
+
+    // =========================================================
+    // LEVELS 1, 2, 3 MULTIPLE CHOICE LOGIC
+    // =========================================================
+    document.querySelectorAll(".quest-option-btn[data-q]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const qNum = Number(btn.getAttribute("data-q"));
+        const isCorrect = btn.getAttribute("data-correct") === "true";
+        const currentCard = document.getElementById(`stage-q${qNum}`);
+        const feedbackEl = document.getElementById(`q${qNum}-feedback`);
+
+        if (isCorrect) {
+          btn.classList.add("option-right");
+          feedbackEl.textContent = "Level Cleared!";
+          feedbackEl.classList.remove("text-[#ff85a2]");
+          feedbackEl.classList.add("text-[#64ffda]");
+          feedbackEl.classList.remove("opacity-0");
+
+          burstSparkles(e.clientX, e.clientY, 26);
+          currentCard.querySelectorAll(".quest-option-btn").forEach((b) => (b.disabled = true));
+
+          const nextStageId = qNum < 3 ? `stage-q${qNum + 1}` : "stage-cats";
+          setTimeout(() => {
+            switchStage(`stage-q${qNum}`, nextStageId, qNum + 1);
+          }, 680);
+        } else {
+          btn.classList.add("option-wrong");
+          setTimeout(() => btn.classList.remove("option-wrong"), 600);
+
+          currentCard.classList.remove("shake-card");
+          void currentCard.offsetWidth;
+          currentCard.classList.add("shake-card");
+
+          feedbackEl.textContent = "try again love";
+          feedbackEl.classList.remove("text-[#64ffda]");
+          feedbackEl.classList.add("text-[#ff85a2]");
+          feedbackEl.classList.remove("opacity-0");
+        }
+      });
+    });
+
+    // =========================================================
+    // LEVEL 4: 8 HIDDEN CATS IN THE FANTASY GAME WORLD
+    // =========================================================
+    const CATS_ROSTER = [
+      { id: 1, shortName: "B&W Cat I" },
+      { id: 2, shortName: "B&W Cat II" },
+      { id: 3, shortName: "B&W Cat III" },
+      { id: 4, shortName: "B&W Kitten" },
+      { id: 5, shortName: "White Cat" },
+      { id: 6, shortName: "Tabby & White" },
+      { id: 7, shortName: "Baby Tabby" },
+      { id: 8, shortName: "Black & White" }
+    ];
+    let rescuedCats = new Set();
+
+    const catsRosterGrid = document.getElementById("cats-roster-grid");
+    const catsFoundCount = document.getElementById("cats-found-count");
+    const unlockScrollBtn = document.getElementById("unlock-scroll-btn");
+    const fantasyWorldContainer = document.getElementById("fantasy-world-container");
+
+    function updateCatsRosterUI() {
+      catsRosterGrid.innerHTML = "";
+      CATS_ROSTER.forEach((cat) => {
+        const isRescued = rescuedCats.has(cat.id);
+        const card = document.createElement("div");
+        card.className = `rounded-xl py-1.5 px-1 border text-center transition-all duration-300 ${
+          isRescued
+            ? "bg-[#2e1c54] border-[#ffd97d] text-[#ffe39c] shadow-md"
+            : "bg-[#120826]/80 border-[#7ef6ff]/20 text-[#b8a6cf]/55"
+        }`;
+        card.innerHTML = `
+          <div class="flex justify-center mb-0.5">
+            <svg class="w-4 h-4 ${isRescued ? "text-[#ffd97d]" : "text-[#7ef6ff]/30"}" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4c-2.5 0-4.7 1.1-6.2 2.8L4 3v6.5C3.4 10.6 3 11.8 3 13c0 4.4 4 8 9 8s9-3.6 9-8c0-1.2-.4-2.4-1-3.5V3l-1.8 3.8C16.7 5.1 14.5 4 12 4z"/>
+            </svg>
+          </div>
+          <div class="font-game text-[10px] truncate">${cat.shortName}</div>
+        `;
+        catsRosterGrid.appendChild(card);
+      });
+
+      catsFoundCount.textContent = `${rescuedCats.size} / 8 Found`;
+
+      if (rescuedCats.size === 8) {
+        unlockScrollBtn.disabled = false;
+        unlockScrollBtn.textContent = "All 8 Rescued! Enter Final Portal";
+        unlockScrollBtn.classList.remove("opacity-45", "cursor-not-allowed");
+        unlockScrollBtn.classList.add("cursor-pointer");
+      } else {
+        unlockScrollBtn.disabled = true;
+        unlockScrollBtn.textContent = "Rescue All 8 Cats to Open Portal";
+        unlockScrollBtn.classList.add("opacity-45", "cursor-not-allowed");
+        unlockScrollBtn.classList.remove("cursor-pointer");
+      }
+    }
+
+    function showRescueTag(clientX, clientY, catName) {
+      const rect = fantasyWorldContainer.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      const tag = document.createElement("div");
+      tag.className = "rescue-floating-tag";
+      tag.style.left = `${Math.max(10, Math.min(rect.width - 155, x - 55))}px`;
+      tag.style.top = `${Math.max(10, y - 22)}px`;
+      tag.textContent = `+1 ${catName}`;
+      fantasyWorldContainer.appendChild(tag);
+      setTimeout(() => tag.remove(), 1150);
+    }
+
+    document.querySelectorAll(".fantasy-cat").forEach((catEl) => {
+      catEl.addEventListener("click", (e) => {
+        const id = Number(catEl.getAttribute("data-cat-id"));
+        const name = catEl.getAttribute("data-cat-name");
+        if (rescuedCats.has(id)) return;
+
+        rescuedCats.add(id);
+        catEl.classList.add("rescued");
+        catEl.classList.remove("hint-glow");
+        showRescueTag(e.clientX, e.clientY, name);
+        burstSparkles(e.clientX, e.clientY, 20);
+        updateCatsRosterUI();
+      });
+    });
+
+    // Sparkle Hint button highlights unfound cats softly
+    document.getElementById("sparkle-hint-btn").addEventListener("click", () => {
+      document.querySelectorAll(".fantasy-cat").forEach((catEl) => {
+        const id = Number(catEl.getAttribute("data-cat-id"));
+        if (!rescuedCats.has(id)) {
+          catEl.classList.add("hint-glow");
+          setTimeout(() => catEl.classList.remove("hint-glow"), 2200);
+        }
+      });
+    });
+
+    unlockScrollBtn.addEventListener("click", () => {
+      if (rescuedCats.size === 8) {
+        switchStage("stage-cats", "stage-chest", 5);
+      }
+    });
+
+    // =========================================================
+    // STAGE 5: TREASURE CHEST, RELIC PHOTO & SCATTERED LETTERS
+    // =========================================================
+    const TARGET_BIRTHDAY_PHRASE = "happy birthday to the light of my life";
+    const openChestTrigger = document.getElementById("open-chest-trigger");
+    const chestLidGroup = document.getElementById("chest-lid-group");
+    const chestClosedView = document.getElementById("chest-closed-view");
+    const chestOpenedView = document.getElementById("chest-opened-view");
+    const assembledPhraseContainer = document.getElementById("assembled-phrase-container");
+    const scatteredLettersPool = document.getElementById("scattered-letters-pool");
+    const scatteredLettersPoolWrapper = document.getElementById("scattered-letters-pool-wrapper");
+    const lettersProgressBadge = document.getElementById("letters-progress-badge");
+    const enterFinalScrollBtn = document.getElementById("enter-final-scroll-btn");
+
+    let letterSlotElements = [];
+    let gatheredLetterCount = 0;
+    let totalLetterCount = 0;
+
+    function initScatteredLettersPuzzle() {
+      assembledPhraseContainer.innerHTML = "";
+      scatteredLettersPool.innerHTML = "";
+      scatteredLettersPoolWrapper.classList.remove("hidden");
+      letterSlotElements = [];
+      gatheredLetterCount = 0;
+
+      const words = TARGET_BIRTHDAY_PHRASE.split(" ");
+      let letterIndex = 0;
+
+      words.forEach((word) => {
+        const wordGroup = document.createElement("div");
+        wordGroup.className = "inline-flex items-center gap-1";
+
+        for (let i = 0; i < word.length; i++) {
+          const char = word[i];
+          const slot = document.createElement("span");
+          slot.className =
+            "phrase-slot w-6 h-8 sm:w-7 sm:h-9 rounded-lg bg-[#0d061c] border border-[#7ef6ff]/30 flex items-center justify-center font-game text-sm sm:text-base text-transparent select-none";
+          slot.textContent = char;
+          slot.dataset.char = char;
+          slot.dataset.slotIndex = String(letterIndex);
+          wordGroup.appendChild(slot);
+          letterSlotElements.push(slot);
+          letterIndex++;
+        }
+
+        assembledPhraseContainer.appendChild(wordGroup);
+      });
+
+      totalLetterCount = letterSlotElements.length;
+      lettersProgressBadge.textContent = `0 / ${totalLetterCount} Letters`;
+      enterFinalScrollBtn.disabled = true;
+      enterFinalScrollBtn.textContent = "Gather All Letters to Open Final Scroll";
+      enterFinalScrollBtn.classList.add("opacity-45", "cursor-not-allowed");
+      enterFinalScrollBtn.classList.remove("cursor-pointer");
+
+      // Create shuffled scattered letter tiles
+      const shuffledItems = letterSlotElements.map((slot, idx) => ({
+        char: slot.dataset.char,
+        slotIndex: idx
+      }));
+
+      for (let i = shuffledItems.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledItems[i], shuffledItems[j]] = [shuffledItems[j], shuffledItems[i]];
+      }
+
+      shuffledItems.forEach((item, idx) => {
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "scattered-letter-tile w-9 h-9 sm:w-10 sm:h-10 rounded-xl font-game text-base sm:text-lg font-semibold flex items-center justify-center";
+        tile.textContent = item.char;
+        tile.dataset.char = item.char;
+        const randomRot = ((idx % 5) - 2) * 5;
+        tile.style.setProperty("--rot", `${randomRot}deg`);
+        tile.style.animationDelay = `${(idx % 6) * 0.25}s`;
+
+        tile.addEventListener("click", (e) => {
+          gatherSingleLetterTile(tile, e.clientX, e.clientY);
+        });
+
+        scatteredLettersPool.appendChild(tile);
+      });
+    }
+
+    function gatherSingleLetterTile(tile, sparkX, sparkY) {
+      if (tile.classList.contains("gathered")) return;
+      const char = tile.dataset.char;
+
+      // Find the first unfilled slot matching this letter so the phrase fills cleanly
+      const targetSlot = letterSlotElements.find(
+        (s) => !s.classList.contains("filled") && s.dataset.char === char
+      );
+
+      if (!targetSlot) return;
+
+      tile.classList.add("gathered");
+      targetSlot.classList.add("filled");
+      targetSlot.classList.remove("text-transparent");
+
+      gatheredLetterCount++;
+      lettersProgressBadge.textContent = `${gatheredLetterCount} / ${totalLetterCount} Letters`;
+
+      if (sparkX && sparkY) {
+        burstSparkles(sparkX, sparkY, 10);
+      }
+
+      if (gatheredLetterCount === totalLetterCount) {
+        burstSparkles(window.innerWidth / 2, window.innerHeight / 2, 36);
+        scatteredLettersPoolWrapper.classList.add("hidden");
+        enterFinalScrollBtn.disabled = false;
+        enterFinalScrollBtn.textContent = "Open Final Birthday Scroll";
+        enterFinalScrollBtn.classList.remove("opacity-45", "cursor-not-allowed");
+        enterFinalScrollBtn.classList.add("cursor-pointer");
+      }
+    }
+
+    document.getElementById("gather-all-letters-btn").addEventListener("click", () => {
+      const remainingTiles = Array.from(
+        scatteredLettersPool.querySelectorAll(".scattered-letter-tile:not(.gathered)")
+      );
+      remainingTiles.forEach((tile, idx) => {
+        setTimeout(() => {
+          const rect = tile.getBoundingClientRect();
+          gatherSingleLetterTile(tile, rect.left + rect.width / 2, rect.top + rect.height / 2);
+        }, idx * 45);
+      });
+    });
+
+    function openFantasyChest() {
+      chestLidGroup.classList.add("chest-lid-opened");
+      burstSparkles(window.innerWidth / 2, window.innerHeight / 2, 44);
+
+      setTimeout(() => {
+        chestClosedView.classList.add("hidden");
+        chestOpenedView.classList.remove("hidden");
+        initScatteredLettersPuzzle();
+      }, 520);
+    }
+
+    openChestTrigger.addEventListener("click", openFantasyChest);
+    openChestTrigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") openFantasyChest();
+    });
+
+    enterFinalScrollBtn.addEventListener("click", () => {
+      if (gatheredLetterCount === totalLetterCount) {
+        burstSparkles(window.innerWidth / 2, window.innerHeight / 2, 38);
+        switchStage("stage-chest", "stage-final", 6);
+      }
+    });
+
+    // Play Again Reset
+    document.getElementById("play-again-btn").addEventListener("click", () => {
+      document.querySelectorAll(".quest-option-btn[data-q]").forEach((b) => {
+        b.disabled = false;
+        b.classList.remove("option-right", "option-wrong");
+      });
+      ["q1-feedback", "q2-feedback", "q3-feedback"].forEach((id) => {
+        document.getElementById(id).classList.add("opacity-0");
+      });
+
+      rescuedCats.clear();
+      document.querySelectorAll(".fantasy-cat").forEach((c) => {
+        c.classList.remove("rescued", "hint-glow");
+      });
+      updateCatsRosterUI();
+
+      chestLidGroup.classList.remove("chest-lid-opened");
+      chestClosedView.classList.remove("hidden");
+      chestOpenedView.classList.add("hidden");
+
+      switchStage("stage-final", "stage-q1", 1);
+    });
+
+    // =========================================================
+    // AMBIENT TWILIGHT SPARKLES & CELEBRATION PARTICLE BURSTS
+    // =========================================================
+    const canvas = document.getElementById("sky-particles-canvas");
+    const ctx = canvas.getContext("2d");
+    let ambientParticles = [];
+    let burstParticles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    class FireflyParticle {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial = false) {
+        this.x = Math.random() * canvas.width;
+        this.y = initial ? Math.random() * canvas.height : canvas.height + 10;
+        this.size = 1 + Math.random() * 2.2;
+        this.vy = 0.2 + Math.random() * 0.45;
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.phase = Math.random() * Math.PI * 2;
+        const colors = ["#7ef6ff", "#ffd97d", "#ff9ebb", "#ffffff"];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      update() {
+        this.y -= this.vy;
+        this.x += this.vx + Math.sin(this.phase) * 0.2;
+        this.phase += 0.03;
+        if (this.y < -10) this.reset(false);
+      }
+      draw() {
+        const alpha = 0.35 + 0.55 * Math.sin(this.phase);
+        ctx.save();
+        ctx.globalAlpha = Math.max(0.1, alpha);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function burstSparkles(originX, originY, count = 24) {
+      const colors = ["#58f3ff", "#ffd97d", "#ff7eb3", "#ffffff"];
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+        const speed = 1.6 + Math.random() * 4.2;
+        burstParticles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1,
+          life: 1,
+          decay: 0.018 + Math.random() * 0.018,
+          size: 2 + Math.random() * 3,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+
+    function initParticles() {
+      resizeCanvas();
+      const total = Math.min(60, Math.floor((canvas.width * canvas.height) / 19000));
+      ambientParticles = Array.from({ length: total }, () => new FireflyParticle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ambientParticles.forEach((p) => {
+        p.update();
+        p.draw();
+      });
+
+      for (let i = burstParticles.length - 1; i >= 0; i--) {
+        const b = burstParticles[i];
+        b.x += b.vx;
+        b.y += b.vy;
+        b.vy += 0.06;
+        b.life -= b.decay;
+
+        if (b.life <= 0) {
+          burstParticles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = b.life;
+        ctx.fillStyle = b.color;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      requestAnimationFrame(animateParticles);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+
+    window.onload = function () {
+      updateCountdownTick();
+      setInterval(updateCountdownTick, 1000);
+      updateCatsRosterUI();
+      initParticles();
+      animateParticles();
+    };
+  </script>
+</body>
+</html>
